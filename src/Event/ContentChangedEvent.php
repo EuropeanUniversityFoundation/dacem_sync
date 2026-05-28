@@ -19,6 +19,13 @@ class ContentChangedEvent extends Event {
   public $entityTypeId;
 
   /**
+   * The entity bundle.
+   *
+   * @var string
+   */
+  public $bundle;
+
+  /**
    * The entity ID.
    *
    * @var int
@@ -37,13 +44,16 @@ class ContentChangedEvent extends Event {
    *
    * @param string $entity_type_id
    *   The entity type ID.
+   * @param string $bundle
+   *   The entity bundle.
    * @param int $id
    *   The entity ID.
    * @param string $operation
    *   The operation.
    */
-  public function __construct(string $entity_type_id, int $id, string $operation) {
+  public function __construct(string $entity_type_id, string $bundle, int $id, string $operation) {
     $this->entityTypeId = $entity_type_id;
+    $this->bundle = $bundle;
     $this->id = $id;
     $this->operation = $operation;
   }

@@ -18,6 +18,7 @@ function dacem_sync_entity_insert(EntityInterface $entity): void {
 
   $event = new ContentChangedEvent(
     $entity->getEntityTypeId(),
+    $entity->bundle(),
     $entity->id(),
     'insert',
   );
@@ -36,6 +37,7 @@ function dacem_sync_entity_update(EntityInterface $entity): void {
   
   $event = new ContentChangedEvent(
     $entity->getEntityTypeId(),
+    $entity->bundle(),
     $entity->id(),
     'update',
   );
@@ -54,6 +56,7 @@ function dacem_sync_entity_delete(EntityInterface $entity): void {
   
   $event = new ContentChangedEvent(
     $entity->getEntityTypeId(),
+    $entity->bundle(),
     $entity->id(),
     'delete',
   );

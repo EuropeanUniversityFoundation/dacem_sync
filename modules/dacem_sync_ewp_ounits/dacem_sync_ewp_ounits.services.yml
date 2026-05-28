@@ -1,6 +1,6 @@
 services:
   dacem_sync_ewp_ounits.event_subscriber:
     class: Drupal\dacem_sync_ewp_ounits\EventSubscriber\ContentChangedEventSubscriber
-    arguments: ['@logger.factory', '@string_translation']
+    arguments: ['@logger.factory', '@queue']
     tags:
       - { name: event_subscriber }

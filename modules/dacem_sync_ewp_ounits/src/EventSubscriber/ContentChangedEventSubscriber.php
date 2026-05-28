@@ -5,17 +5,14 @@ declare(strict_types=1);
 namespace Drupal\dacem_sync_ewp_ounits\EventSubscriber;
 
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
-use Drupal\Core\StringTranslation\StringTranslationTrait;
-use Drupal\Core\StringTranslation\TranslationInterface;
+use Drupal\Core\Queue\QueueFactory;
 use Drupal\dacem_sync\Event\ContentChangedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
  * DACEM Sync EWP OUnits content changed event subscriber.
  */
-final class ContentChangedEventSubscriber implements EventSubscriberInterface {
-
-  use StringTranslationTrait;
+class ContentChangedEventSubscriber implements EventSubscriberInterface {
 
   /**
    * The logger service.
@@ -25,19 +22,26 @@ final class ContentChangedEventSubscriber implements EventSubscriberInterface {
   protected $logger;
 
   /**
+   * The queue factory.
+   *
+   * @var \Drupal\Core\Queue\QueueFactory
+   */
+  protected $queueFactory;
+
+  /**
    * Constructs event subscriber.
    *
    * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
    *   The logger factory service.
-   * @param \Drupal\Core\StringTranslation\TranslationInterface $string_translation
-   *   The string translation service.
+   * @param \Drupal\Core\Queue\QueueFactory $queue_factory
+   *   The queue factory service.
    */
   public function __construct(
     LoggerChannelFactoryInterface $logger_factory,
-    TranslationInterface $string_translation,
+    QueueFactory $queue_factory,
   ) {
-    $this->logger            = $logger_factory->get('dacem_sync_ewp_ounits');
-    $this->stringTranslation = $string_translation;
+    $this->logger = $logger_factory->get('dacem_sync_ewp_ounits');
+    $this->queueFactory = $queue_factory;
   }
 
   /**
@@ -50,19 +54,29 @@ final class ContentChangedEventSubscriber implements EventSubscriberInterface {
   }
 
   /**
-   * Subscribe to the user institution change event dispatched.
+   * Subscribe to the content changed event dispatched.
    *
    * @param \Drupal\dacem_sync\Event\ContentChangedEvent $event
    *   The event object.
    */
   public function onContentChanged(ContentChangedEvent $event) {
-    $message = implode(':', [
-      $event->entityTypeId,
-      (string) $event->id,
-      $event->operation,
-    ]);
+    if ($event->entityTypeId === 'node' && $event->bundle === 'organizational_unit') {
+      $params = [
+        $event->entityTypeId,
+        $event->bundle,
+        $event->id,
+        $event->operation,
+      ];
 
-    $this->logger->notice($message);
+      $message = implode(':', $params);
+
+      $this->logger->notice($message);
+
+      $params[] = 'ounit_sync_handler';
+
+      $queue = $this->queueFactory->get('dacem_sync_queue_worker');
+      $queue->createItem($params);
+    }
   }
 
 }
