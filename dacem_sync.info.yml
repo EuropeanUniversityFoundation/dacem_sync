@@ -1,0 +1,8 @@
+name: 'DACEM Sync'
+type: module
+description: 'Synchronizes DACEM content types with OCCAPI-serialized entities.'
+package: DACEM
+core_version_requirement: ^10 || ^11
+dependencies:
+  - drupal:field
+  - drupal:node
