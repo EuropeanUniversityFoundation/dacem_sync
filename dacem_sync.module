@@ -4,3 +4,60 @@
  * @file
  * Primary module hooks for DACEM Sync module.
  */
+
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\dacem_sync\Event\ContentChangedEvent;
+
+/**
+ * Implements hook_entity_insert().
+ */
+function dacem_sync_entity_insert(EntityInterface $entity): void {
+  if ($entity->getEntityTypeId() !== 'node') {
+    return;
+  }
+
+  $event = new ContentChangedEvent(
+    $entity->getEntityTypeId(),
+    $entity->id(),
+    'insert',
+  );
+
+  \Drupal::service('event_dispatcher')
+    ->dispatch($event, ContentChangedEvent::EVENT_NAME);
+}
+
+/**
+ * Implements hook_entity_update().
+ */
+function dacem_sync_entity_update(EntityInterface $entity): void {
+  if ($entity->getEntityTypeId() !== 'node') {
+    return;
+  }
+  
+  $event = new ContentChangedEvent(
+    $entity->getEntityTypeId(),
+    $entity->id(),
+    'update',
+  );
+
+  \Drupal::service('event_dispatcher')
+    ->dispatch($event, ContentChangedEvent::EVENT_NAME);
+}
+
+/**
+ * Implements hook_entity_delete().
+ */
+function dacem_sync_entity_delete(EntityInterface $entity): void {
+  if ($entity->getEntityTypeId() !== 'node') {
+    return;
+  }
+  
+  $event = new ContentChangedEvent(
+    $entity->getEntityTypeId(),
+    $entity->id(),
+    'delete',
+  );
+
+  \Drupal::service('event_dispatcher')
+    ->dispatch($event, ContentChangedEvent::EVENT_NAME);
+}
