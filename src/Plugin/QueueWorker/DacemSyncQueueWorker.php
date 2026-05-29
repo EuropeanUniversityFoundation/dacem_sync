@@ -9,6 +9,7 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\Attribute\QueueWorker;
 use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\dacem_sync\SyncHandlerResolver;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -29,6 +30,13 @@ class DacemSyncQueueWorker extends QueueWorkerBase implements ContainerFactoryPl
   protected $logger;
 
   /**
+   * The sync handler resolver.
+   *
+   * @var \Drupal\dacem_sync\SyncHandlerResolver
+   */
+  protected $syncHandlerResolver;
+
+  /**
    * Constructs a new DacemSyncQueueWorker instance.
    *
    * @param array $configuration
@@ -39,15 +47,19 @@ class DacemSyncQueueWorker extends QueueWorkerBase implements ContainerFactoryPl
    *   The plugin implementation definition.
    * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
    *   The logger factory service.
+   * @param \Drupal\dacem_sync\SyncHandlerResolver $sync_handler_resolver
+   *   The sync handler resolver.
    */
   public function __construct(
     array $configuration,
     $plugin_id,
     $plugin_definition,
     LoggerChannelFactoryInterface $logger_factory,
+    SyncHandlerResolver $sync_handler_resolver,
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->logger = $logger_factory->get('dacem_sync');
+    $this->syncHandlerResolver = $sync_handler_resolver;
   }
 
   /**
@@ -59,6 +71,7 @@ class DacemSyncQueueWorker extends QueueWorkerBase implements ContainerFactoryPl
       $plugin_id,
       $plugin_definition,
       $container->get('logger.factory'),
+      $container->get('dacem_sync.sync_handler_resolver'),
     );
   }
 
@@ -66,9 +79,35 @@ class DacemSyncQueueWorker extends QueueWorkerBase implements ContainerFactoryPl
    * {@inheritdoc}
    */
   public function processItem($data): void {
-    $message = implode(':', $data);
+    $message = implode(':', array_values($data));
 
     $this->logger->notice($message);
+
+    $entity_type_id = $data['entity_type_id'];
+    $bundle = $data['bundle'];
+    $uuid = $data['uuid'];
+
+    $operation = $data['operation'];
+
+    $sync_handler_id = $data['sync_handler'];
+    $sync_handler = $this->syncHandlerResolver->get($sync_handler_id);
+
+    switch ($operation) {
+      case 'insert':
+        $sync_handler->onInsert($entity_type_id, $bundle, $uuid);
+        break;
+
+      case 'update':
+        $sync_handler->onUpdate($entity_type_id, $bundle, $uuid);
+        break;
+
+      case 'delete':
+        $sync_handler->onDelete($entity_type_id, $bundle, $uuid);
+        break;
+
+      default:
+        break;
+    }
   }
 
 }

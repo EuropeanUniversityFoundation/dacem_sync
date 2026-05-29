@@ -1,0 +1,5 @@
+services:
+  dacem_sync.sync_handler_resolver:
+    class: Drupal\dacem_sync\SyncHandlerResolver
+    arguments:
+      - !tagged_iterator sync_handler

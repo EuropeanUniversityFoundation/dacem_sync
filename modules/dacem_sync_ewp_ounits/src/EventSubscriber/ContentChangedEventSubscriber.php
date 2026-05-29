@@ -62,17 +62,17 @@ class ContentChangedEventSubscriber implements EventSubscriberInterface {
   public function onContentChanged(ContentChangedEvent $event) {
     if ($event->entityTypeId === 'node' && $event->bundle === 'organizational_unit') {
       $params = [
-        $event->entityTypeId,
-        $event->bundle,
-        $event->id,
-        $event->operation,
+        'entity_type_id' => $event->entityTypeId,
+        'bundle' => $event->bundle,
+        'uuid' => $event->uuid,
+        'operation' => $event->operation,
       ];
 
-      $message = implode(':', $params);
+      $message = implode(':', array_values($params));
 
       $this->logger->notice($message);
 
-      $params[] = 'ounit_sync_handler';
+      $params['sync_handler'] = 'ounit_sync_handler';
 
       $queue = $this->queueFactory->get('dacem_sync_queue_worker');
       $queue->createItem($params);
