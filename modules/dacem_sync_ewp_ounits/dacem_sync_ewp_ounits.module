@@ -1,0 +1,25 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * @file
+ * Primary module hooks for DACEM Sync EWP OUnits module.
+ */
+
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\dacem_sync_ewp_ounits\SyncHandler\OunitSyncHandler;
+
+/**
+ * Implements hook_entity_base_field_info_alter().
+ */
+function dacem_sync_ewp_ounits_entity_base_field_info_alter(&$fields, EntityTypeInterface $entity_type): void {
+  if ($entity_type->id() === OunitSyncHandler::TARGET_ENTITY_TYPE_ID) {
+    $fields[OunitSyncHandler::BASE_FIELD] = BaseFieldDefinition::create('uuid')
+      ->setLabel(new TranslatableMarkup('Source UUID'))
+      ->setReadOnly(TRUE)
+      ->setCardinality(1);
+  }
+}

@@ -6,6 +6,6 @@ services:
       - { name: event_subscriber }
   dacem_sync_ewp_ounits.ounit_sync_handler:
     class: Drupal\dacem_sync_ewp_ounits\SyncHandler\OunitSyncHandler
-    arguments: ['@logger.factory', '@queue']
+    arguments: ['entity_type.manager', '@logger.factory']
     tags:
       - { name: 'sync_handler', id: 'ounit_sync_handler' }
