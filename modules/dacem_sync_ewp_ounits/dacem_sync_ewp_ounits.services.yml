@@ -6,6 +6,8 @@ services:
       - { name: event_subscriber }
   dacem_sync_ewp_ounits.ounit_sync_handler:
     class: Drupal\dacem_sync_ewp_ounits\SyncHandler\OunitSyncHandler
-    arguments: ['entity_type.manager', '@logger.factory']
+    arguments: ['@entity_type.manager', '@dacem_sync_ewp_ounits.ounit_field_mapping', '@logger.factory']
     tags:
       - { name: 'sync_handler', id: 'ounit_sync_handler' }
+  dacem_sync_ewp_ounits.ounit_field_mapping:
+    class: Drupal\dacem_sync_ewp_ounits\FieldMapping\OunitFieldMapping

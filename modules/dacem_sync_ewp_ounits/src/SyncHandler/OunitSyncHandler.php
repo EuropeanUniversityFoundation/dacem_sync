@@ -8,6 +8,7 @@ use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\dacem_sync\SyncHandlerInterface;
+use Drupal\dacem_sync\FieldMappingInterface;
 
 /**
  * Defines a sync handler for EWP OUnits.
@@ -32,6 +33,13 @@ class OunitSyncHandler implements SyncHandlerInterface {
   protected $entityTypeManager;
 
   /**
+   * The field mapping.
+   *
+   * @var \Drupal\dacem_sync\FieldMappingInterface
+   */
+  protected $fieldMapping;
+
+  /**
    * The logger service.
    *
    * @var \Psr\Log\LoggerInterface
@@ -43,14 +51,18 @@ class OunitSyncHandler implements SyncHandlerInterface {
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
+   * @param \Drupal\dacem_sync\FieldMappingInterface $field_mapping
+   *   The field mapping.
    * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
    *   The logger factory service.
    */
   public function __construct(
     EntityTypeManagerInterface $entity_type_manager,
+    FieldMappingInterface $field_mapping,
     LoggerChannelFactoryInterface $logger_factory,
   ) {
     $this->entityTypeManager = $entity_type_manager;
+    $this->fieldMapping = $field_mapping;
     $this->logger = $logger_factory->get('dacem_sync_ewp_ounits');
   }
 
