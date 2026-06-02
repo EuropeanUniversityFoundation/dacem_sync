@@ -1,4 +1,10 @@
 services:
+  dacem_sync.entity_builder:
+    class: Drupal\dacem_sync\SyncEntityBuilder
+    arguments: ['@entity_type.manager', '@logger.factory']
+  dacem_sync.entity_manager:
+    class: Drupal\dacem_sync\SyncEntityManager
+    arguments: ['@entity_type.manager', '@logger.factory']
   dacem_sync.sync_handler_resolver:
     class: Drupal\dacem_sync\SyncHandlerResolver
     arguments:

@@ -10,6 +10,7 @@ declare(strict_types=1);
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\dacem_sync\SyncEntityManager;
 use Drupal\dacem_sync_ewp_ounits\SyncHandler\OunitSyncHandler;
 
 /**
@@ -17,7 +18,7 @@ use Drupal\dacem_sync_ewp_ounits\SyncHandler\OunitSyncHandler;
  */
 function dacem_sync_ewp_ounits_entity_base_field_info_alter(&$fields, EntityTypeInterface $entity_type): void {
   if ($entity_type->id() === OunitSyncHandler::TARGET_ENTITY_TYPE_ID) {
-    $fields[OunitSyncHandler::BASE_FIELD] = BaseFieldDefinition::create('uuid')
+    $fields[SyncEntityManager::BASE_FIELD] = BaseFieldDefinition::create('uuid')
       ->setLabel(new TranslatableMarkup('Source UUID'))
       ->setReadOnly(TRUE)
       ->setCardinality(1);

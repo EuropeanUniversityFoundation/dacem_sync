@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Drupal\dacem_sync_ewp_ounits\SyncHandler;
 
-use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
-use Drupal\dacem_sync\SyncHandlerInterface;
 use Drupal\dacem_sync\FieldMappingInterface;
+use Drupal\dacem_sync\SyncEntityBuilder;
+use Drupal\dacem_sync\SyncEntityManager;
+use Drupal\dacem_sync\SyncHandlerInterface;
 
 /**
  * Defines a sync handler for EWP OUnits.
@@ -17,20 +17,26 @@ class OunitSyncHandler implements SyncHandlerInterface {
 
   public const SOURCE_ENTITY_TYPE_ID = 'node';
   public const SOURCE_BUNDLE = 'organizational_unit';
-  public const SOURCE_UNIQUE_FIELD = 'uuid';
+  public const SOURCE_UNIQUE_PER_HEI = 'field_ou_code';
 
   public const TARGET_ENTITY_TYPE_ID = 'ounit';
-  public const TARGET_BUNDLE = 'ounit';
-  public const TARGET_UNIQUE_FIELD = 'ounit_id';
-
-  public const BASE_FIELD = 'source_uuid';
+  public const TARGET_BUNDLE = self::TARGET_ENTITY_TYPE_ID;
+  public const TARGET_UNIQUE_PER_HEI = 'ounit_code';
+  public const TARGET_HEI_FIELD = 'parent_hei';
 
   /**
-   * The entity type manager.
+   * The entity builder.
    *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   * @var \Drupal\dacem_sync\SyncEntityBuilder
    */
-  protected $entityTypeManager;
+  protected $entityBuilder;
+
+  /**
+   * The entity manager.
+   *
+   * @var \Drupal\dacem_sync\SyncEntityManager
+   */
+  protected $entityManager;
 
   /**
    * The field mapping.
@@ -47,9 +53,11 @@ class OunitSyncHandler implements SyncHandlerInterface {
   protected $logger;
 
   /**
-   * Constructs event subscriber.
+   * Constructs sync handler.
    *
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   * @param \Drupal\dacem_sync\SyncEntityBuilder $entity_builder
+   *   The entity type manager.
+   * @param \Drupal\dacem_sync\SyncEntityManager $entity_manager
    *   The entity type manager.
    * @param \Drupal\dacem_sync\FieldMappingInterface $field_mapping
    *   The field mapping.
@@ -57,11 +65,13 @@ class OunitSyncHandler implements SyncHandlerInterface {
    *   The logger factory service.
    */
   public function __construct(
-    EntityTypeManagerInterface $entity_type_manager,
+    SyncEntityBuilder $entity_builder,
+    SyncEntityManager $entity_manager,
     FieldMappingInterface $field_mapping,
     LoggerChannelFactoryInterface $logger_factory,
   ) {
-    $this->entityTypeManager = $entity_type_manager;
+    $this->entityBuilder = $entity_builder;
+    $this->entityManager = $entity_manager;
     $this->fieldMapping = $field_mapping;
     $this->logger = $logger_factory->get('dacem_sync_ewp_ounits');
   }
@@ -70,90 +80,73 @@ class OunitSyncHandler implements SyncHandlerInterface {
    * {@inheritdoc}
    */
   public function onInsert(string $entity_type_id, string $bundle, string $uuid): void {
-    // Load the source entity and extract the unique field value.
-    $source_matches = $this->entityTypeManager
-      ->getStorage($entity_type_id)
-      ->loadByProperties(['uuid' => $uuid]);
+    /** @var \Drupal\node\NodeInterface $source */
+    $source = $this->entityManager->loadByUuid($entity_type_id, $uuid);
 
-    /** @var \Drupal\Core\Entity\ContentEntityInterface $source */
-    $source = reset($source_matches);
+    // Check for existing target before creating new.
+    // Source UUID is new, so compare by unique field combination.
+    $source_hei_id = $this->entityManager->getGroupHeiId($source);
+    $source_unique_per_hei = $source->get(self::SOURCE_UNIQUE_PER_HEI)->value;
 
-    $unique = $source->get(self::SOURCE_UNIQUE_FIELD)->value;
+    $target_properties = [
+      self::TARGET_HEI_FIELD => $source_hei_id,
+      self::TARGET_UNIQUE_PER_HEI => $source_unique_per_hei,
+    ];
+    $target = $this->entityManager
+      ->loadByProperties(self::TARGET_ENTITY_TYPE_ID, $target_properties);
 
-    // Check for existing target entity with the same unique value.
-    $target_matches = $this->entityTypeManager
-      ->getStorage(self::TARGET_ENTITY_TYPE_ID)
-      ->loadByProperties([self::TARGET_UNIQUE_FIELD => $unique]);
+    $map = $this->fieldMapping
+      ->mapping()[self::TARGET_ENTITY_TYPE_ID][self::TARGET_BUNDLE];
 
-    // If a target entity already exists, update its source_uuid.
-    if (!empty($target_matches)) {
+    if (!empty($target)) {
       /** @var \Drupal\Core\Entity\ContentEntityInterface $target */
-      $target = reset($target_matches);
-      $target->set(self::BASE_FIELD, $source->uuid());
-      $target->save();
-
-      $this->updateFromSource($target, $source);
+      $target->set(SyncEntityManager::BASE_FIELD, $uuid);
+      $this->entityBuilder
+        ->updateTargetFromSource($target, $source, $map);
     }
     else {
-      $this->createFromSource($source);
+      $this->entityBuilder
+        ->createTargetFromSource(self::TARGET_ENTITY_TYPE_ID, $source, $map);
     }
+
   }
 
   /**
    * {@inheritdoc}
    */
   public function onUpdate(string $entity_type_id, string $bundle, string $uuid): void {
-    // Load the source entity.
-    $source_matches = $this->entityTypeManager
-      ->getStorage($entity_type_id)
-      ->loadByProperties(['uuid' => $uuid]);
-
     /** @var \Drupal\Core\Entity\ContentEntityInterface $source */
-    $source = reset($source_matches);
+    $source = $this->entityManager->loadByUuid($entity_type_id, $uuid);
 
-    // Check for existing target entity with the same UUID.
-    $target_matches = $this->entityTypeManager
-      ->getStorage(self::TARGET_ENTITY_TYPE_ID)
-      ->loadByProperties([self::BASE_FIELD => $uuid]);
+    // Check for missing target before attempting to update.
+    $target = $this->entityManager
+      ->loadBySourceUuid(self::TARGET_ENTITY_TYPE_ID, $uuid);
 
-    if (empty($target_matches)) {
-      $this->createFromSource($source);
+    $map = $this->fieldMapping
+      ->mapping()[self::TARGET_ENTITY_TYPE_ID][self::TARGET_BUNDLE];
+
+    if (empty($target)) {
+      $this->entityBuilder
+        ->createTargetFromSource(self::TARGET_ENTITY_TYPE_ID, $source, $map);
     }
     else {
-      /** @var \Drupal\Core\Entity\ContentEntityInterface $target */
-      $target = reset($target_matches);
-      $this->updateFromSource($target, $source);
+      $this->entityBuilder
+        ->updateTargetFromSource($target, $source, $map);
     }
+
   }
 
   /**
    * {@inheritdoc}
    */
   public function onDelete(string $entity_type_id, string $bundle, string $uuid): void {
-    // Check for existing target entity with the same UUID.
-    $target_matches = $this->entityTypeManager
-      ->getStorage(self::TARGET_ENTITY_TYPE_ID)
-      ->loadByProperties([self::BASE_FIELD => $uuid]);
-
-    if (!empty($target_matches)) {
+    $target = $this->entityManager
+      ->loadBySourceUuid(self::TARGET_ENTITY_TYPE_ID, $uuid);
+    if (!empty($target)) {
       /** @var \Drupal\Core\Entity\ContentEntityInterface $target */
-      $target = reset($target_matches);
       $target->set('status', FALSE);
       $target->save();
     }
-  }
-
-  /**
-   * Creates a target entity from source entity data.
-   */
-  public function createFromSource(ContentEntityInterface $source): void {
-
-  }
-
-  /**
-   * Updates a target entity from source entity data.
-   */
-  public function updateFromSource(ContentEntityInterface $target, ContentEntityInterface $source): void {
 
   }
 
