@@ -5,20 +5,26 @@ declare(strict_types=1);
 namespace Drupal\dacem_sync;
 
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 
 /**
  * Builds entities from mapped and transformed data.
  */
-class SyncEntityBuilder {
+class EntityBuilder {
 
   /**
-   * The entity type manager.
+   * The data transformer resolver.
    *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   * @var \Drupal\dacem_sync\DataTransformerResolver
    */
-  protected $entityTypeManager;
+  protected $dataTransformerResolver;
+
+  /**
+   * The entity manager.
+   *
+   * @var \Drupal\dacem_sync\EntityManager
+   */
+  protected $entityManager;
 
   /**
    * The logger service.
@@ -30,16 +36,20 @@ class SyncEntityBuilder {
   /**
    * Constructs entity manager.
    *
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   * @param \Drupal\dacem_sync\DataTransformerResolver $data_transformer_resolver
+   *   The data transformer resolver.
+   * @param \Drupal\dacem_sync\EntityManager $entity_manager
    *   The entity type manager.
    * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
    *   The logger factory service.
    */
   public function __construct(
-    EntityTypeManagerInterface $entity_type_manager,
+    DataTransformerResolver $data_transformer_resolver,
+    EntityManager $entity_manager,
     LoggerChannelFactoryInterface $logger_factory,
   ) {
-    $this->entityTypeManager = $entity_type_manager;
+    $this->dataTransformerResolver = $data_transformer_resolver;
+    $this->entityManager = $entity_manager;
     $this->logger = $logger_factory->get('dacem_sync');
   }
 

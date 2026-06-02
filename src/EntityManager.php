@@ -12,7 +12,7 @@ use Drupal\node\NodeInterface;
 /**
  * Manages entity operations for the DACEM Sync module.
  */
-class SyncEntityManager {
+class EntityManager {
 
   public const BASE_FIELD = 'source_uuid';
   public const GROUP_HEI_REF = 'field_institution_profile';

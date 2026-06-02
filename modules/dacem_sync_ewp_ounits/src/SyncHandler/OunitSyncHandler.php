@@ -6,8 +6,8 @@ namespace Drupal\dacem_sync_ewp_ounits\SyncHandler;
 
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\dacem_sync\FieldMappingInterface;
-use Drupal\dacem_sync\SyncEntityBuilder;
-use Drupal\dacem_sync\SyncEntityManager;
+use Drupal\dacem_sync\EntityBuilder;
+use Drupal\dacem_sync\EntityManager;
 use Drupal\dacem_sync\SyncHandlerInterface;
 
 /**
@@ -27,14 +27,14 @@ class OunitSyncHandler implements SyncHandlerInterface {
   /**
    * The entity builder.
    *
-   * @var \Drupal\dacem_sync\SyncEntityBuilder
+   * @var \Drupal\dacem_sync\EntityBuilder
    */
   protected $entityBuilder;
 
   /**
    * The entity manager.
    *
-   * @var \Drupal\dacem_sync\SyncEntityManager
+   * @var \Drupal\dacem_sync\EntityManager
    */
   protected $entityManager;
 
@@ -55,9 +55,9 @@ class OunitSyncHandler implements SyncHandlerInterface {
   /**
    * Constructs sync handler.
    *
-   * @param \Drupal\dacem_sync\SyncEntityBuilder $entity_builder
+   * @param \Drupal\dacem_sync\EntityBuilder $entity_builder
    *   The entity type manager.
-   * @param \Drupal\dacem_sync\SyncEntityManager $entity_manager
+   * @param \Drupal\dacem_sync\EntityManager $entity_manager
    *   The entity type manager.
    * @param \Drupal\dacem_sync\FieldMappingInterface $field_mapping
    *   The field mapping.
@@ -65,8 +65,8 @@ class OunitSyncHandler implements SyncHandlerInterface {
    *   The logger factory service.
    */
   public function __construct(
-    SyncEntityBuilder $entity_builder,
-    SyncEntityManager $entity_manager,
+    EntityBuilder $entity_builder,
+    EntityManager $entity_manager,
     FieldMappingInterface $field_mapping,
     LoggerChannelFactoryInterface $logger_factory,
   ) {
@@ -100,7 +100,7 @@ class OunitSyncHandler implements SyncHandlerInterface {
 
     if (!empty($target)) {
       /** @var \Drupal\Core\Entity\ContentEntityInterface $target */
-      $target->set(SyncEntityManager::BASE_FIELD, $uuid);
+      $target->set(EntityManager::BASE_FIELD, $uuid);
       $this->entityBuilder
         ->updateTargetFromSource($target, $source, $map);
     }

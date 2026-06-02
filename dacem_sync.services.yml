@@ -1,9 +1,13 @@
 services:
+  dacem_sync.data_transformer_resolver:
+    class: Drupal\dacem_sync\DataTransformerResolver
+    arguments:
+      - !tagged_iterator data_transformer
   dacem_sync.entity_builder:
-    class: Drupal\dacem_sync\SyncEntityBuilder
-    arguments: ['@entity_type.manager', '@logger.factory']
+    class: Drupal\dacem_sync\EntityBuilder
+    arguments: ['@dacem_sync.data_transformer_resolver', '@dacem_sync.entity_manager', '@logger.factory']
   dacem_sync.entity_manager:
-    class: Drupal\dacem_sync\SyncEntityManager
+    class: Drupal\dacem_sync\EntityManager
     arguments: ['@entity_type.manager', '@logger.factory']
   dacem_sync.sync_handler_resolver:
     class: Drupal\dacem_sync\SyncHandlerResolver
