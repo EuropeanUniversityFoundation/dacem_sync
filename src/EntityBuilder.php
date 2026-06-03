@@ -64,6 +64,7 @@ class EntityBuilder {
    *   Field mapping for target fields obtained from source fields.
    */
   public function createTargetFromSource(string $entity_type_id, EntityInterface $source, array $map): void {
+
   }
 
   /**
@@ -77,6 +78,31 @@ class EntityBuilder {
    *   Field mapping for target fields obtained from source fields.
    */
   public function updateTargetFromSource(EntityInterface $target, EntityInterface $source, array $map): void {
+  }
+
+  /**
+   * Builds transformed data from a source entity.
+   *
+   * @param \Drupal\Core\Entity\EntityInterface $source
+   *   The source entity.
+   * @param array $map
+   *   Field mapping for target fields obtained from source fields.
+   *
+   * @return array
+   *   The transformed data.
+   */
+  public function buildFromSource(EntityInterface $source, array $map): array {
+    $data = [];
+
+    foreach ($map as $field_name => $strategy) {
+      $transformer_id = $strategy['transformer'];
+      $transformer = $this->dataTransformerResolver->get($transformer_id);
+
+      /** @var \Drupal\Core\Entity\ContentEntityInterface $source */
+      $data[$field_name] = $transformer->transform($source, $strategy);
+    }
+
+    return $data;
   }
 
 }

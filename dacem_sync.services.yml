@@ -3,6 +3,11 @@ services:
     class: Drupal\dacem_sync\DataTransformerResolver
     arguments:
       - !tagged_iterator data_transformer
+  dacem_sync.data_transformer.canonical:
+    class: Drupal\dacem_sync\DataTransformer\Canonical
+    arguments: []
+    tags:
+      - { name: 'data_transformer', id: 'canonical' }
   dacem_sync.entity_builder:
     class: Drupal\dacem_sync\EntityBuilder
     arguments: ['@dacem_sync.data_transformer_resolver', '@dacem_sync.entity_manager', '@logger.factory']
