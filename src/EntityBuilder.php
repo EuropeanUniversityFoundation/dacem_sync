@@ -105,4 +105,55 @@ class EntityBuilder {
     return $data;
   }
 
+  /**
+   * Extracts data from a target entity.
+   *
+   * @param \Drupal\Core\Entity\EntityInterface $target
+   *   The target entity.
+   * @param array $map
+   *   Field mapping for target fields obtained from source fields.
+   *
+   * @return array
+   *   The extracted data.
+   */
+  public function extractFromTarget(EntityInterface $target, array $map): array {
+    $data = [];
+
+    foreach ($map as $field_name => $strategy) {
+      /** @var \Drupal\Core\Entity\ContentEntityInterface $target */
+      $data[$field_name] = $target->get($field_name)->getValue();
+    }
+
+    return $data;
+  }
+
+  /**
+   * Compares data arrays and returns the diff.
+   *
+   * @param array $source_data
+   *   Data built from the source entity.
+   * @param array $target_data
+   *   Data extracted from the target entity.
+   *
+   * @return array
+   *   The diff.
+   */
+  public function diff(array $source_data, array $target_data): array {
+    $diff = [];
+
+    foreach ($source_data as $field_name => $field_data) {
+      if (serialize($field_data) !== serialize($target_data[$field_name])) {
+        $diff[$field_name] = $field_data;
+      }
+    }
+
+    foreach ($target_data as $field_name => $field_data) {
+      if (!array_key_exists($field_name, $source_data)) {
+        $diff[$field_name] = [];
+      }
+    }
+
+    return $diff;
+  }
+
 }
