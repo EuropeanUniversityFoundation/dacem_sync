@@ -18,7 +18,6 @@ class Multilingual implements DataTransformerInterface {
   public function transform(ContentEntityInterface $source, array $strategy): array {
     $output = [];
 
-    /** @var  \Drupal\Core\Entity\ContentEntityInterface $source */
     $source_field_name = $strategy['source'];
 
     $translations = $source->getTranslationLanguages();

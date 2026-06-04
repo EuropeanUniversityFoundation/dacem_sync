@@ -3,17 +3,31 @@ services:
     class: Drupal\dacem_sync\DataTransformerResolver
     arguments:
       - !tagged_iterator data_transformer
+
   dacem_sync.data_transformer.canonical:
     class: Drupal\dacem_sync\DataTransformer\Canonical
     arguments: []
     tags:
       - { name: 'data_transformer', id: 'canonical' }
+  dacem_sync.data_transformer.group_hei:
+    class: Drupal\dacem_sync\DataTransformer\GroupInstitution
+    arguments: ['@dacem_sync.entity_manager']
+    tags:
+      - { name: 'data_transformer', id: 'group_hei' }
+  dacem_sync.data_transformer.multilingual:
+    class: Drupal\dacem_sync\DataTransformer\Multilingual
+    arguments: []
+    tags:
+      - { name: 'data_transformer', id: 'multilingual' }
+
   dacem_sync.entity_builder:
     class: Drupal\dacem_sync\EntityBuilder
     arguments: ['@dacem_sync.data_transformer_resolver', '@dacem_sync.entity_manager', '@logger.factory']
+
   dacem_sync.entity_manager:
     class: Drupal\dacem_sync\EntityManager
     arguments: ['@entity_type.manager', '@logger.factory']
+
   dacem_sync.sync_handler_resolver:
     class: Drupal\dacem_sync\SyncHandlerResolver
     arguments:

@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Drupal\dacem_sync;
 
-use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
-use Drupal\node\NodeInterface;
 
 /**
  * Manages entity operations for the DACEM Sync module.
@@ -15,6 +14,7 @@ use Drupal\node\NodeInterface;
 class EntityManager {
 
   public const BASE_FIELD = 'source_uuid';
+  public const GROUP_TYPE_ID = '';
   public const GROUP_HEI_REF = 'field_institution_profile';
 
   /**
@@ -48,6 +48,25 @@ class EntityManager {
   }
 
   /**
+   * Builds an entity from a set of properties.
+   *
+   * @param string $entity_type_id
+   *   The entity type ID.
+   * @param array $properties
+   *   An array of properties and values.
+   *
+   * @return \Drupal\Core\Entity\ContentEntityInterface
+   *   The new entity.
+   */
+  public function buildFromProperties(string $entity_type_id, array $properties): ContentEntityInterface {
+    $storage = $this->entityTypeManager->getStorage($entity_type_id);
+    $entity = $storage->create($properties);
+
+    /** @var \Drupal\Core\Entity\ContentEntityInterface $entity */
+    return $entity;
+  }
+
+  /**
    * Loads an entity by a set of properties.
    *
    * @param string $entity_type_id
@@ -55,16 +74,21 @@ class EntityManager {
    * @param array $properties
    *   An array of properties and values.
    *
-   * @return \Drupal\Core\Entity\EntityInterface|null
+   * @return \Drupal\Core\Entity\ContentEntityInterface|null
    *   The entity, or NULL if not found.
    */
-  public function loadByProperties(string $entity_type_id, array $properties): ?EntityInterface {
+  public function loadByProperties(string $entity_type_id, array $properties): ?ContentEntityInterface {
     $storage = $this->entityTypeManager->getStorage($entity_type_id);
-
     $entities = $storage->loadByProperties($properties);
-    $entity = reset($entities);
 
-    return ($entity) ? $entity : NULL;
+    if ($entities) {
+      $entity = reset($entities);
+
+      /** @var \Drupal\Core\Entity\ContentEntityInterface $entity */
+      return $entity;
+    }
+
+    return NULL;
   }
 
   /**
@@ -75,10 +99,10 @@ class EntityManager {
    * @param string $uuid
    *   The UUID of the entity.
    *
-   * @return \Drupal\Core\Entity\EntityInterface|null
+   * @return \Drupal\Core\Entity\ContentEntityInterface|null
    *   The entity, or NULL if not found.
    */
-  public function loadByUuid(string $entity_type_id, string $uuid): ?EntityInterface {
+  public function loadByUuid(string $entity_type_id, string $uuid): ?ContentEntityInterface {
     return $this->loadByProperties($entity_type_id, ['uuid' => $uuid]);
   }
 
@@ -90,10 +114,10 @@ class EntityManager {
    * @param string $uuid
    *   The UUID of the source entity.
    *
-   * @return \Drupal\Core\Entity\EntityInterface|null
+   * @return \Drupal\Core\Entity\ContentEntityInterface|null
    *   The entity, or NULL if not found.
    */
-  public function loadBySourceUuid(string $entity_type_id, string $uuid): ?EntityInterface {
+  public function loadBySourceUuid(string $entity_type_id, string $uuid): ?ContentEntityInterface {
     return $this->loadByProperties($entity_type_id, [self::BASE_FIELD => $uuid]);
   }
 
@@ -109,10 +133,7 @@ class EntityManager {
    *   The owner user ID, or NULL if not found/supported.
    */
   public function getOwnerIdByUuid(string $entity_type_id, string $uuid): ?int {
-    $storage = $this->entityTypeManager->getStorage($entity_type_id);
-
-    $entities = $storage->loadByProperties(['uuid' => $uuid]);
-    $entity = reset($entities);
+    $entity = $this->loadByUuid($entity_type_id, $uuid);
 
     if ($entity && method_exists($entity, 'getOwnerId')) {
       $uid = $entity->getOwnerId();
@@ -124,28 +145,31 @@ class EntityManager {
   }
 
   /**
-   * Gets the "hei" entity ID associated with a node's group.
+   * Gets the "hei" entity ID associated with an entity's group.
    *
-   * @param \Drupal\node\NodeInterface $node
-   *   The node entity object.
+   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+   *   The grouped entity.
    *
    * @return int|null
    *   The ID of the referenced 'hei' entity, or NULL if not found.
    */
-  public function getGroupHeiId(NodeInterface $node) {
+  public function getGroupHeiId(ContentEntityInterface $entity) {
     /** @var \Drupal\group\Entity\Storage\GroupRelationshipStorageInterface $group_relationship_storage */
     $group_relationship_storage = $this->entityTypeManager
       ->getStorage('group_relationship');
 
-    // Look up all group relationships referencing this specific node.
-    $relationships = $group_relationship_storage->loadByEntity($node);
+    $relationships = $group_relationship_storage->loadByEntity($entity);
 
     foreach ($relationships as $relationship) {
       $group = $relationship->getGroup();
 
-      return !$group->get(self::GROUP_HEI_REF)->isEmpty()
-        ? (int) $group->get(self::GROUP_HEI_REF)->target_id
-        : NULL;
+      if (
+        $group->bundle() === self::GROUP_TYPE_ID &&
+        $group->hasField(self::GROUP_HEI_REF)
+      ) {
+        $target_id = $group->get(self::GROUP_HEI_REF)->target_id;
+        return ($target_id) ? (int) $target_id : NULL;
+      }
     }
 
     return NULL;

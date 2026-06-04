@@ -80,7 +80,7 @@ class OunitSyncHandler implements SyncHandlerInterface {
    * {@inheritdoc}
    */
   public function onInsert(string $entity_type_id, string $bundle, string $uuid): void {
-    /** @var \Drupal\node\NodeInterface $source */
+    /** @var \Drupal\Core\Entity\ContentEntityInterface $source */
     $source = $this->entityManager->loadByUuid($entity_type_id, $uuid);
 
     // Check for existing target before creating new.
@@ -101,12 +101,15 @@ class OunitSyncHandler implements SyncHandlerInterface {
     if (!empty($target)) {
       /** @var \Drupal\Core\Entity\ContentEntityInterface $target */
       $target->set(EntityManager::BASE_FIELD, $uuid);
-      $this->entityBuilder
-        ->updateTargetFromSource($target, $source, $map);
+      $this->entityBuilder->updateTargetFromSource($target, $source, $map);
     }
     else {
-      $this->entityBuilder
-        ->createTargetFromSource(self::TARGET_ENTITY_TYPE_ID, $source, $map);
+      $this->entityBuilder->createTargetFromSource(
+        self::TARGET_ENTITY_TYPE_ID,
+        self::TARGET_BUNDLE,
+        $source,
+        $map
+      );
     }
 
   }
@@ -126,12 +129,15 @@ class OunitSyncHandler implements SyncHandlerInterface {
       ->mapping()[self::TARGET_ENTITY_TYPE_ID][self::TARGET_BUNDLE];
 
     if (empty($target)) {
-      $this->entityBuilder
-        ->createTargetFromSource(self::TARGET_ENTITY_TYPE_ID, $source, $map);
+      $this->entityBuilder->createTargetFromSource(
+        self::TARGET_ENTITY_TYPE_ID,
+        self::TARGET_BUNDLE,
+        $source,
+        $map
+      );
     }
     else {
-      $this->entityBuilder
-        ->updateTargetFromSource($target, $source, $map);
+      $this->entityBuilder->updateTargetFromSource($target, $source, $map);
     }
 
   }

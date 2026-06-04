@@ -18,7 +18,6 @@ class Canonical implements DataTransformerInterface {
   public function transform(ContentEntityInterface $source, array $strategy): array {
     $output = [];
 
-    /** @var  \Drupal\Core\Entity\ContentEntityInterface $source */
     $source_field_name = $strategy['source'];
     $source_field_data = $source->get($source_field_name)->getValue();
 

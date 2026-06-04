@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Drupal\dacem_sync;
 
-use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\RevisionLogInterface;
+use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
+use Drupal\user\EntityOwnerInterface;
 
 /**
  * Builds entities from mapped and transformed data.
@@ -34,7 +36,7 @@ class EntityBuilder {
   protected $logger;
 
   /**
-   * Constructs entity manager.
+   * Constructs entity builder.
    *
    * @param \Drupal\dacem_sync\DataTransformerResolver $data_transformer_resolver
    *   The data transformer resolver.
@@ -58,32 +60,86 @@ class EntityBuilder {
    *
    * @param string $entity_type_id
    *   The target entity type ID.
-   * @param \Drupal\Core\Entity\EntityInterface $source
+   * @param string $bundle
+   *   The target entity bundle.
+   * @param \Drupal\Core\Entity\ContentEntityInterface $source
    *   The source entity.
    * @param array $map
    *   Field mapping for target fields obtained from source fields.
    */
-  public function createTargetFromSource(string $entity_type_id, EntityInterface $source, array $map): void {
+  public function createTargetFromSource(
+    string $entity_type_id,
+    string $bundle,
+    ContentEntityInterface $source,
+    array $map,
+  ): void {
+    $new_data = $this->buildFromSource($source, $map);
+
+    if ($entity_type_id !== $bundle) {
+      $new_data['bundle'] = [['target_id' => $bundle]];
+    }
+
+    $target = $this->entityManager
+      ->buildFromProperties($entity_type_id, $new_data);
+
+    if (
+      $target instanceof EntityOwnerInterface &&
+      $source instanceof EntityOwnerInterface
+    ) {
+      $target->setOwnerId($source->getOwnerId());
+    }
+
+    $target->set(EntityManager::BASE_FIELD, $source->uuid());
+
+    $target->save();
 
   }
 
   /**
    * Updates a target entity from a source entity.
    *
-   * @param \Drupal\Core\Entity\EntityInterface $target
+   * @param \Drupal\Core\Entity\ContentEntityInterface $target
    *   The target entity.
-   * @param \Drupal\Core\Entity\EntityInterface $source
+   * @param \Drupal\Core\Entity\ContentEntityInterface $source
    *   The source entity.
    * @param array $map
    *   Field mapping for target fields obtained from source fields.
    */
-  public function updateTargetFromSource(EntityInterface $target, EntityInterface $source, array $map): void {
+  public function updateTargetFromSource(
+    ContentEntityInterface $target,
+    ContentEntityInterface $source,
+    array $map,
+  ): void {
+    $source_data = $this->buildFromSource($source, $map);
+    $target_data = $this->extractFromTarget($target, $map);
+    $diff = $this->diff($source_data, $target_data);
+
+    if (!empty($diff)) {
+      foreach ($diff as $field_name => $field_values) {
+        $target->set($field_name, $field_values);
+      }
+
+      if ($target->getEntityType()->isRevisionable()) {
+        /** @var \Drupal\Core\Entity\RevisionableInterface $target */
+        $target->setNewRevision(TRUE);
+      }
+
+      if ($target instanceof RevisionLogInterface) {
+        $target->setRevisionLogMessage('Synced at ' . time());
+
+        if ($source instanceof RevisionLogInterface) {
+          $target->setRevisionUserId($source->getRevisionUserId());
+        }
+      }
+
+      $target->save();
+    }
   }
 
   /**
    * Builds transformed data from a source entity.
    *
-   * @param \Drupal\Core\Entity\EntityInterface $source
+   * @param \Drupal\Core\Entity\ContentEntityInterface $source
    *   The source entity.
    * @param array $map
    *   Field mapping for target fields obtained from source fields.
@@ -91,14 +147,13 @@ class EntityBuilder {
    * @return array
    *   The transformed data.
    */
-  public function buildFromSource(EntityInterface $source, array $map): array {
+  public function buildFromSource(ContentEntityInterface $source, array $map): array {
     $data = [];
 
     foreach ($map as $field_name => $strategy) {
       $transformer_id = $strategy['transformer'];
       $transformer = $this->dataTransformerResolver->get($transformer_id);
 
-      /** @var \Drupal\Core\Entity\ContentEntityInterface $source */
       $data[$field_name] = $transformer->transform($source, $strategy);
     }
 
@@ -108,7 +163,7 @@ class EntityBuilder {
   /**
    * Extracts data from a target entity.
    *
-   * @param \Drupal\Core\Entity\EntityInterface $target
+   * @param \Drupal\Core\Entity\ContentEntityInterface $target
    *   The target entity.
    * @param array $map
    *   Field mapping for target fields obtained from source fields.
@@ -116,11 +171,10 @@ class EntityBuilder {
    * @return array
    *   The extracted data.
    */
-  public function extractFromTarget(EntityInterface $target, array $map): array {
+  public function extractFromTarget(ContentEntityInterface $target, array $map): array {
     $data = [];
 
     foreach ($map as $field_name => $strategy) {
-      /** @var \Drupal\Core\Entity\ContentEntityInterface $target */
       $data[$field_name] = $target->get($field_name)->getValue();
     }
 

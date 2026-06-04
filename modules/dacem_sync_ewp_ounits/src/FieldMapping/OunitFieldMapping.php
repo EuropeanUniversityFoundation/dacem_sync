@@ -59,6 +59,10 @@ class OunitFieldMapping implements FieldMappingInterface {
             'source' => 'field_ou_web',
             'transform' => 'multilingual',
           ],
+          'parent_hei' => [
+            'required' => TRUE,
+            'transform' => 'group_hei',
+          ],
         ],
       ],
     ];
