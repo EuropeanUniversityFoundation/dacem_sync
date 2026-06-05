@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\dacem_sync_ewp_ounits\DataTransformer;
+namespace Drupal\dacem_sync\DataTransformer;
 
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\dacem_sync\DataTransformerInterface;
@@ -27,17 +27,16 @@ class Multilingual implements DataTransformerInterface {
         ->get($source_field_name)
         ->getValue();
 
-      $transformed = [];
-
       foreach ($translation_field_data as $item) {
+        $transformed = [];
+
         $item['langcode'] = $langcode;
         foreach ($strategy['properties'] as $target_prop => $source_prop) {
           $transformed[$target_prop] = $item[$source_prop];
         }
 
+        $output[] = $transformed;
       }
-
-      $output[] = $transformed;
     }
 
     return $output;

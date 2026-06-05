@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\dacem_sync_ewp_ounits\DataTransformer;
+namespace Drupal\dacem_sync\DataTransformer;
 
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\dacem_sync\DataTransformerInterface;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\dacem_sync_ewp_ounits\DataTransformer;
+namespace Drupal\dacem_sync\DataTransformer;
 
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\dacem_sync\DataTransformerInterface;
@@ -24,7 +24,9 @@ class Canonical implements DataTransformerInterface {
     foreach ($source_field_data as $item) {
       $transformed = [];
       foreach ($strategy['properties'] as $target_prop => $source_prop) {
-        $transformed[$target_prop] = $item[$source_prop];
+        if (array_key_exists($source_prop, $item)) {
+          $transformed[$target_prop] = $item[$source_prop];
+        }
       }
 
       $output[] = $transformed;
