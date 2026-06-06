@@ -19,7 +19,7 @@ function dacem_sync_entity_insert(EntityInterface $entity): void {
   $event = new ContentChangedEvent(
     $entity->getEntityTypeId(),
     $entity->bundle(),
-    $entity->id(),
+    $entity->uuid(),
     'insert',
   );
 
@@ -34,11 +34,11 @@ function dacem_sync_entity_update(EntityInterface $entity): void {
   if ($entity->getEntityTypeId() !== 'node') {
     return;
   }
-  
+
   $event = new ContentChangedEvent(
     $entity->getEntityTypeId(),
     $entity->bundle(),
-    $entity->id(),
+    $entity->uuid(),
     'update',
   );
 
@@ -53,11 +53,11 @@ function dacem_sync_entity_delete(EntityInterface $entity): void {
   if ($entity->getEntityTypeId() !== 'node') {
     return;
   }
-  
+
   $event = new ContentChangedEvent(
     $entity->getEntityTypeId(),
     $entity->bundle(),
-    $entity->id(),
+    $entity->uuid(),
     'delete',
   );
 

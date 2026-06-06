@@ -42,21 +42,39 @@ class NeutralSyncHandler implements SyncHandlerInterface {
    * {@inheritdoc}
    */
   public function onInsert(string $entity_type_id, string $bundle, string $uuid): void {
-    $this->inserted[] = [$entity_type_id, $bundle, $uuid];
+    $args = [
+      'entity_type_id' => $entity_type_id,
+      'bundle' => $bundle,
+      'uuid' => $uuid,
+    ];
+
+    $this->inserted[] = $args;
   }
 
   /**
    * {@inheritdoc}
    */
   public function onUpdate(string $entity_type_id, string $bundle, string $uuid): void {
-    $this->updated[] = [$entity_type_id, $bundle, $uuid];
+    $args = [
+      'entity_type_id' => $entity_type_id,
+      'bundle' => $bundle,
+      'uuid' => $uuid,
+    ];
+
+    $this->updated[] = $args;
   }
 
   /**
    * {@inheritdoc}
    */
   public function onDelete(string $entity_type_id, string $bundle, string $uuid): void {
-    $this->deleted[] = [$entity_type_id, $bundle, $uuid];
+    $args = [
+      'entity_type_id' => $entity_type_id,
+      'bundle' => $bundle,
+      'uuid' => $uuid,
+    ];
+
+    $this->deleted[] = $args;
   }
 
 }
