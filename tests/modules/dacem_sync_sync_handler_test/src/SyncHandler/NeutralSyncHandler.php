@@ -11,6 +11,26 @@ use Drupal\dacem_sync\SyncHandlerInterface;
  */
 class NeutralSyncHandler implements SyncHandlerInterface {
 
+  public const SYNC_HANDLER_ID = 'neutral';
+
+  public const SOURCE_ENTITY_TYPE_ID = 'node';
+  public const SOURCE_BUNDLE = 'example';
+
+  /**
+   * Items inserted.
+   */
+  public array $inserted = [];
+
+  /**
+   * Items update.
+   */
+  public array $updated = [];
+
+  /**
+   * Items deleted.
+   */
+  public array $deleted = [];
+
   /**
    * {@inheritdoc}
    */
@@ -22,21 +42,21 @@ class NeutralSyncHandler implements SyncHandlerInterface {
    * {@inheritdoc}
    */
   public function onInsert(string $entity_type_id, string $bundle, string $uuid): void {
-    // Do nothing.
+    $this->inserted[] = [$entity_type_id, $bundle, $uuid];
   }
 
   /**
    * {@inheritdoc}
    */
   public function onUpdate(string $entity_type_id, string $bundle, string $uuid): void {
-    // Do nothing.
+    $this->updated[] = [$entity_type_id, $bundle, $uuid];
   }
 
   /**
    * {@inheritdoc}
    */
   public function onDelete(string $entity_type_id, string $bundle, string $uuid): void {
-    // Do nothing.
+    $this->deleted[] = [$entity_type_id, $bundle, $uuid];
   }
 
 }

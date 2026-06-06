@@ -16,11 +16,14 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Defines 'dacem_sync_queue_worker' queue worker.
  */
 #[QueueWorker(
-  id: 'dacem_sync_queue_worker',
+  id: self::PLUGIN_ID,
   title: new TranslatableMarkup('DACEM Sync'),
   cron: ['time' => 60]
 )]
 class DacemSyncQueueWorker extends QueueWorkerBase implements ContainerFactoryPluginInterface {
+
+  public const PLUGIN_ID = 'dacem_sync_queue_worker';
+  public const QUEUE_NAME = self::PLUGIN_ID;
 
   /**
    * The logger service.

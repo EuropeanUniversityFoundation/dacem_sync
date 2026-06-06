@@ -37,7 +37,7 @@ class SyncHandlerResolver {
    */
   public function get(string $id): SyncHandlerInterface {
     if (!isset($this->syncHandlers[$id])) {
-      throw new \InvalidArgumentException();
+      throw new \InvalidArgumentException('Unknown sync handler: ' . $id);
     }
 
     return $this->syncHandlers[$id];

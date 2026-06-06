@@ -1,6 +1,11 @@
 services:
-  dacem_sync_sync_handler_test.neutral_sync_handler:
+  dacem_sync_sync_handler_test.neutral:
     class: Drupal\dacem_sync_sync_handler_test\SyncHandler\NeutralSyncHandler
     arguments: []
     tags:
       - { name: 'sync_handler'}
+  dacem_sync_sync_handler_test.event_subscriber:
+    class: Drupal\dacem_sync_sync_handler_test\EventSubscriber\ContentChangedEventSubscriber
+    arguments: ['@queue']
+    tags:
+      - { name: event_subscriber }

@@ -15,6 +15,8 @@ use Drupal\dacem_sync\SyncHandlerInterface;
  */
 class OunitSyncHandler implements SyncHandlerInterface {
 
+  public const SYNC_HANDLER_ID = 'ounit_sync_handler';
+
   public const SOURCE_ENTITY_TYPE_ID = 'node';
   public const SOURCE_BUNDLE = 'organizational_unit';
   public const SOURCE_UNIQUE_PER_HEI = 'field_ou_code';
@@ -80,7 +82,7 @@ class OunitSyncHandler implements SyncHandlerInterface {
    * {@inheritdoc}
    */
   public function id(): string {
-    return 'ounit_sync_handler';
+    return self::SYNC_HANDLER_ID;
   }
 
   /**
