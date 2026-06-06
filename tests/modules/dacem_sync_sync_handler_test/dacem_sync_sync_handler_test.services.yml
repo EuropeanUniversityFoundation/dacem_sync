@@ -9,3 +9,8 @@ services:
     arguments: ['@queue']
     tags:
       - { name: event_subscriber }
+  dacem_sync_sync_handler_test.data_transformer.copy:
+    class: Drupal\dacem_sync_sync_handler_test\DataTransformer\Copy
+    arguments: []
+    tags:
+      - { name: 'data_transformer'}

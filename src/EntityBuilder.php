@@ -6,6 +6,7 @@ namespace Drupal\dacem_sync;
 
 use Drupal\Core\Entity\RevisionLogInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\RevisionableInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\user\EntityOwnerInterface;
 
@@ -76,7 +77,7 @@ class EntityBuilder {
     $new_data = $this->buildFromSource($source, $map);
 
     if ($entity_type_id !== $bundle) {
-      $new_data['bundle'] = [['target_id' => $bundle]];
+      $new_data[EntityManager::BUNDLE_PLACEHOLDER] = ['target_id' => $bundle];
     }
 
     $target = $this->entityManager
@@ -119,13 +120,14 @@ class EntityBuilder {
         $target->set($field_name, $field_values);
       }
 
-      if ($target->getEntityType()->isRevisionable()) {
-        /** @var \Drupal\Core\Entity\RevisionableInterface $target */
+      if ($target instanceof RevisionableInterface) {
         $target->setNewRevision(TRUE);
       }
 
       if ($target instanceof RevisionLogInterface) {
-        $target->setRevisionLogMessage('Synced at ' . time());
+        $target->setRevisionLogMessage(
+          sprintf('Synced from source at %s', time())
+        );
 
         if ($source instanceof RevisionLogInterface) {
           $target->setRevisionUserId($source->getRevisionUserId());
