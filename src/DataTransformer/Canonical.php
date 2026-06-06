@@ -15,6 +15,13 @@ class Canonical implements DataTransformerInterface {
   /**
    * {@inheritdoc}
    */
+  public function id(): string {
+    return 'canonical';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function transform(ContentEntityInterface $source, array $strategy): array {
     $output = [];
 

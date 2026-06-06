@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Drupal\Tests\dacem_sync\Unit\DataTransformer;
 
 use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\dacem_sync\DataTransformer\Canonical;
 use Drupal\dacem_sync\DataTransformer\GroupInstitution;
 use Drupal\dacem_sync\EntityManager;
 use Drupal\Tests\UnitTestCase;
 
 /**
  * Tests the GroupInstitution data transformer.
+ *
+ * @group dacem_sync
  */
 class GroupInstitutionTest extends UnitTestCase {
 

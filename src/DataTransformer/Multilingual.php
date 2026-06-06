@@ -15,6 +15,13 @@ class Multilingual implements DataTransformerInterface {
   /**
    * {@inheritdoc}
    */
+  public function id(): string {
+    return 'multilingual';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function transform(ContentEntityInterface $source, array $strategy): array {
     $output = [];
 

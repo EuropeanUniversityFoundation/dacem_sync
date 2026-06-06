@@ -35,6 +35,13 @@ class GroupInstitution implements DataTransformerInterface {
   /**
    * {@inheritdoc}
    */
+  public function id(): string {
+    return 'group_hei';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function transform(ContentEntityInterface $source, array $strategy): array {
     $output = [
       ['target_id' => $this->entityManager->getGroupHeiId($source)],

@@ -11,6 +11,8 @@ use Drupal\Tests\UnitTestCase;
 
 /**
  * Tests the Canonical data transformer.
+ *
+ * @group dacem_sync
  */
 class CanonicalTest extends UnitTestCase {
 
@@ -25,7 +27,7 @@ class CanonicalTest extends UnitTestCase {
         [
           'value' => 'My value',
         ],
-      ]);
+    ]);
 
     $entity = $this->createMock(ContentEntityInterface::class);
 
@@ -69,7 +71,7 @@ class CanonicalTest extends UnitTestCase {
         [
           'value' => 'Another value',
         ],
-      ]);
+    ]);
 
     $entity = $this->createMock(ContentEntityInterface::class);
 
@@ -113,7 +115,7 @@ class CanonicalTest extends UnitTestCase {
         [
           'value' => 'My value',
         ],
-      ]);
+    ]);
 
     $entity = $this->createMock(ContentEntityInterface::class);
 
@@ -150,7 +152,7 @@ class CanonicalTest extends UnitTestCase {
 
     $field = $this->createMock(FieldItemListInterface::class);
 
-    $field->method('getValue')  ->willReturn([
+    $field->method('getValue')->willReturn([
         [
           'uri' => 'https://example.com',
           'title' => 'Example',
@@ -158,7 +160,7 @@ class CanonicalTest extends UnitTestCase {
             'key' => 'value',
           ],
         ],
-      ]);
+    ]);
 
     $entity = $this->createMock(ContentEntityInterface::class);
 
@@ -202,10 +204,10 @@ class CanonicalTest extends UnitTestCase {
     $field = $this->createMock(FieldItemListInterface::class);
 
     $field->method('getValue')->willReturn([
-        [
-          'value' => 'My value',
-        ],
-      ]);
+      [
+        'value' => 'My value',
+      ],
+    ]);
 
     $entity = $this->createMock(ContentEntityInterface::class);
 

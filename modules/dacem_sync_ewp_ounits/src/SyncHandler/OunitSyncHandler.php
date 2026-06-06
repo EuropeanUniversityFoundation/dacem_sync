@@ -79,6 +79,13 @@ class OunitSyncHandler implements SyncHandlerInterface {
   /**
    * {@inheritdoc}
    */
+  public function id(): string {
+    return 'ounit_sync_handler';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function onInsert(string $entity_type_id, string $bundle, string $uuid): void {
     /** @var \Drupal\Core\Entity\ContentEntityInterface $source */
     $source = $this->entityManager->loadByUuid($entity_type_id, $uuid);

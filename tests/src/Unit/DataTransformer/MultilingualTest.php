@@ -12,6 +12,8 @@ use Drupal\Tests\UnitTestCase;
 
 /**
  * Tests the Multilingual data transformer.
+ *
+ * @group dacem_sync
  */
 class MultilingualTest extends UnitTestCase {
 
