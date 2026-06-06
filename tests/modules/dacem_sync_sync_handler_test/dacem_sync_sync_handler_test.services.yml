@@ -1,0 +1,6 @@
+services:
+  dacem_sync_sync_handler_test.neutral_sync_handler:
+    class: Drupal\dacem_sync_sync_handler_test\SyncHandler\NeutralSyncHandler
+    arguments: []
+    tags:
+      - { name: 'sync_handler'}

@@ -19,13 +19,11 @@ class SyncHandlerResolver {
   /**
    * The constructor.
    *
-   * @param iterable $sync_handlers
-   *   The sync handlers.
+   * @param SyncHandlerInterface $sync_handler
+   *   The sync handler.
    */
-  public function __construct(iterable $sync_handlers) {
-    foreach ($sync_handlers as $sync_handler) {
-      $this->syncHandlers[$sync_handler->id()] = $sync_handler;
-    }
+  public function addHandler(SyncHandlerInterface $sync_handler): void {
+    $this->syncHandlers[$sync_handler->id()] = $sync_handler;
   }
 
   /**

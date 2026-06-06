@@ -10,6 +10,11 @@ namespace Drupal\dacem_sync;
 interface SyncHandlerInterface {
 
   /**
+   * Returns the ID of the handler.
+   */
+  public function id(): string;
+
+  /**
    * Handle entity insert operation.
    *
    * @param string $entity_type_id

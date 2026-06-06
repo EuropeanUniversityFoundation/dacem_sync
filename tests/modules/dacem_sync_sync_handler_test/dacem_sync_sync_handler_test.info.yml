@@ -1,0 +1,6 @@
+name: 'DACEM Sync sync_handler test'
+type: module
+description: 'Provides a sync_handler to test the SyncHandlerResolver.'
+package: Testing
+dependencies:
+  - dacem_sync:dacem_sync

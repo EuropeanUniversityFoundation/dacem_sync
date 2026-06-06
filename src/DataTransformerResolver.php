@@ -19,13 +19,11 @@ class DataTransformerResolver {
   /**
    * The constructor.
    *
-   * @param iterable $data_transformers
-   *   The sync handlers.
+   * @param DataTransformerInterface $data_transformer
+   *   The data transformer.
    */
-  public function __construct(iterable $data_transformers) {
-    foreach ($data_transformers as $data_transformer) {
-      $this->dataTransformers[$data_transformer->id()] = $data_transformer;
-    }
+  public function addTransformer(DataTransformerInterface $data_transformer) {
+    $this->dataTransformers[$data_transformer->id()] = $data_transformer;
   }
 
   /**

@@ -12,6 +12,11 @@ use Drupal\Core\Entity\ContentEntityInterface;
 interface DataTransformerInterface {
 
   /**
+   * Returns the ID of the transformer.
+   */
+  public function id(): string;
+
+  /**
    * Transforms the data.
    */
   public function transform(ContentEntityInterface $source, array $strategy): array;
