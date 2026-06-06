@@ -13,6 +13,7 @@ use Drupal\Core\Logger\LoggerChannelFactoryInterface;
  */
 class EntityManager {
 
+  public const BUNDLE_PLACEHOLDER = 'bundle_key';
   public const BASE_FIELD = 'source_uuid';
   public const GROUP_TYPE_ID = '';
   public const GROUP_HEI_REF = 'field_institution_profile';
@@ -59,6 +60,13 @@ class EntityManager {
    *   The new entity.
    */
   public function buildFromProperties(string $entity_type_id, array $properties): ContentEntityInterface {
+    if (array_key_exists(self::BUNDLE_PLACEHOLDER, $properties)) {
+      $bundle_key = $this->entityTypeManager
+        ->getDefinition($entity_type_id)->getKey('bundle');
+      $properties[$bundle_key] = $properties[self::BUNDLE_PLACEHOLDER];
+      unset($properties[self::BUNDLE_PLACEHOLDER]);
+    }
+
     $storage = $this->entityTypeManager->getStorage($entity_type_id);
     $entity = $storage->create($properties);
 
