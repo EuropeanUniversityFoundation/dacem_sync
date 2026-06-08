@@ -16,11 +16,15 @@ use Drupal\dacem_sync_ewp_ounits\SyncHandler\OunitSyncHandler;
 /**
  * Implements hook_entity_base_field_info_alter().
  */
-function dacem_sync_ewp_ounits_entity_base_field_info_alter(&$fields, EntityTypeInterface $entity_type): void {
+function dacem_sync_ewp_ounits_entity_base_field_info(EntityTypeInterface $entity_type): array {
+  $fields = [];
+
   if ($entity_type->id() === OunitSyncHandler::TARGET_ENTITY_TYPE_ID) {
     $fields[EntityManager::BASE_FIELD] = BaseFieldDefinition::create('uuid')
       ->setLabel(new TranslatableMarkup('Source UUID'))
       ->setReadOnly(TRUE)
       ->setCardinality(1);
   }
+
+  return $fields;
 }

@@ -25,14 +25,14 @@ class OunitFieldMapping implements FieldMappingInterface {
             ],
             'required' => TRUE,
             'source' => 'title',
-            'transform' => 'multilingual',
+            'transformer' => 'multilingual',
           ],
           'abbreviation' => [
             'properties' => [
               'value' => 'value',
             ],
             'source' => 'field_ou_abbreviation',
-            'transform' => 'canonical',
+            'transformer' => 'canonical',
           ],
           'ounit_id' => [
             'properties' => [
@@ -40,14 +40,14 @@ class OunitFieldMapping implements FieldMappingInterface {
             ],
             'required' => TRUE,
             'source' => 'uuid',
-            'transform' => 'canonical',
+            'transformer' => 'canonical',
           ],
           'ounit_code' => [
             'properties' => [
               'value' => 'value',
             ],
             'source' => 'field_ou_code',
-            'transform' => 'canonical',
+            'transformer' => 'canonical',
           ],
           'url' => [
             'properties' => [
@@ -57,11 +57,11 @@ class OunitFieldMapping implements FieldMappingInterface {
               'lang' => 'langcode',
             ],
             'source' => 'field_ou_web',
-            'transform' => 'multilingual',
+            'transformer' => 'multilingual',
           ],
           'parent_hei' => [
             'required' => TRUE,
-            'transform' => 'group_hei',
+            'transformer' => 'group_hei',
           ],
         ],
       ],
