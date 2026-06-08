@@ -7,8 +7,6 @@ namespace Drupal\Tests\dacem_sync\Kernel;
 use Drupal\dacem_sync\EntityManager;
 use Drupal\node\Entity\Node;
 
-use function PHPUnit\Framework\assertTrue;
-
 /**
  * Tests the entity builder service.
  *
@@ -54,12 +52,12 @@ class EntityBuilderTest extends EntityBuilderTestBase {
 
     $this->assertEquals(
       'First of multiple',
-      $target->get('field_multiple')->get(0)->value
+      $target->get('field_multiple')->get(0)->getValue()['value']
     );
 
     $this->assertEquals(
       'Last of multiple',
-      $target->get('field_multiple')->get(1)->value
+      $target->get('field_multiple')->get(1)->getValue()['value']
     );
 
     $this->assertGreaterThan(

@@ -15,7 +15,7 @@ class EntityManager {
 
   public const BUNDLE_PLACEHOLDER = 'bundle_key';
   public const BASE_FIELD = 'source_uuid';
-  public const GROUP_TYPE_ID = '';
+  public const GROUP_TYPE_ID = 'universitytypegroup';
   public const GROUP_HEI_REF = 'field_institution_profile';
 
   /**
