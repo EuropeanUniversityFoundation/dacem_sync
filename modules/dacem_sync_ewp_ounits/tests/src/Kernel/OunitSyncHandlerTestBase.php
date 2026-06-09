@@ -11,6 +11,7 @@ use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\group\Entity\GroupRelationshipType;
 use Drupal\group\Entity\GroupType;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\language\Entity\ConfigurableLanguage;
 use Drupal\node\Entity\NodeType;
 
 /**
@@ -25,8 +26,6 @@ class OunitSyncHandlerTestBase extends KernelTestBase {
    */
   protected static $modules = [
     'system',
-    'language',
-    'locale',
     'action',
     'user',
     'node',
@@ -35,6 +34,9 @@ class OunitSyncHandlerTestBase extends KernelTestBase {
     'link',
     'text',
     'options',
+    'language',
+    'locale',
+    'content_translation',
     'entity',
     'flexible_permissions',
     'group',
@@ -83,6 +85,8 @@ class OunitSyncHandlerTestBase extends KernelTestBase {
       'node',
       'group',
       'gnode',
+      'language',
+      'content_translation',
       'ewp_core',
       'ewp_contact',
       'ewp_institutions',
@@ -104,17 +108,10 @@ class OunitSyncHandlerTestBase extends KernelTestBase {
       $start = substr(EntityManager::GROUP_TYPE_ID, 0, 19);
       $end = substr(md5($preferred_id), 0, 12);
       $safe_id = implode('-', [$start, $end]);
-    } else {
+    }
+    else {
       $safe_id = $preferred_id;
     }
-
-    $relationship_type = GroupRelationshipType::create([
-      'id' => $safe_id,
-      'group_type' => EntityManager::GROUP_TYPE_ID,
-      'label' => 'Organizational Unit Content Relationship',
-      'content_plugin' => $plugin_id,
-    ]);
-    $relationship_type->save();
 
     $field_storage = FieldStorageConfig::create([
       'field_name' => EntityManager::GROUP_HEI_REF,
@@ -137,6 +134,15 @@ class OunitSyncHandlerTestBase extends KernelTestBase {
       ],
     ]);
     $field_instance->save();
+
+    // Define a Group Relationship type.
+    $relationship_type = GroupRelationshipType::create([
+      'id' => $safe_id,
+      'group_type' => EntityManager::GROUP_TYPE_ID,
+      'label' => 'Organizational Unit Content Relationship',
+      'content_plugin' => $plugin_id,
+    ]);
+    $relationship_type->save();
 
     // Define the content type fields.
     FieldStorageConfig::create([
@@ -180,6 +186,24 @@ class OunitSyncHandlerTestBase extends KernelTestBase {
       'bundle' => OunitSyncHandler::SOURCE_BUNDLE,
       'cardinality' => 1,
     ])->save();
+
+    // This field will not be syncronized.
+    FieldStorageConfig::create([
+      'field_name' => 'field_ou_description',
+      'entity_type' => 'node',
+      'type' => 'text_long',
+      'cardinality' => 1,
+    ])->save();
+
+    FieldConfig::create([
+      'field_name' => 'field_ou_description',
+      'entity_type' => 'node',
+      'bundle' => OunitSyncHandler::SOURCE_BUNDLE,
+      'cardinality' => 1,
+    ])->save();
+
+    // Add a language for content translation.
+    ConfigurableLanguage::createFromLangcode('pt-pt')->save();
   }
 
 }

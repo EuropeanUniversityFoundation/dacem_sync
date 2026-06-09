@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Drupal\dacem_sync_ewp_ounits\SyncHandler;
 
+use Drupal\Core\Entity\RevisionableInterface;
+use Drupal\Core\Entity\RevisionLogInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\dacem_sync\FieldMappingInterface;
 use Drupal\dacem_sync\EntityBuilder;
@@ -127,7 +129,7 @@ class OunitSyncHandler implements SyncHandlerInterface {
    * {@inheritdoc}
    */
   public function onUpdate(string $entity_type_id, string $bundle, string $uuid): void {
-    /** @var \Drupal\Core\Entity\ContentEntityInterface $source */
+    /** @var \Drupal\Core\Entity\ContentEntityInterface|null $source */
     $source = $this->entityManager->loadByUuid($entity_type_id, $uuid);
 
     // Check for missing target before attempting to update.
@@ -145,6 +147,9 @@ class OunitSyncHandler implements SyncHandlerInterface {
         $map
       );
     }
+    elseif (empty($source)) {
+      $this->onDelete($entity_type_id, $bundle, $uuid);
+    }
     else {
       $this->entityBuilder->updateTargetFromSource($target, $source, $map);
     }
@@ -160,6 +165,17 @@ class OunitSyncHandler implements SyncHandlerInterface {
     if (!empty($target)) {
       /** @var \Drupal\Core\Entity\ContentEntityInterface $target */
       $target->set('status', FALSE);
+
+      if ($target instanceof RevisionableInterface) {
+        $target->setNewRevision(TRUE);
+      }
+
+      if ($target instanceof RevisionLogInterface) {
+        $target->setRevisionLogMessage(
+          sprintf('Source deleted at %s', time())
+        );
+      }
+
       $target->save();
     }
 
