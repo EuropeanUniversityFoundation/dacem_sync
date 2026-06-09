@@ -91,9 +91,9 @@ class OunitSyncHandlerTest extends OunitSyncHandlerTestBase {
   }
 
   /**
-   * Tests the queueing workflow.
+   * Tests the onInsert workflow.
    */
-  public function testQueueWorkflow(): void {
+  public function testOnInsert(): void {
     $queue = $this->container->get('queue')
       ->get(DacemSyncQueueWorker::QUEUE_NAME);
 
@@ -112,6 +112,55 @@ class OunitSyncHandlerTest extends OunitSyncHandlerTestBase {
     $ounit = Ounit::load(1);
     $source_uuid = $ounit->get('source_uuid')->getValue()[0]['value'];
     $this->assertEquals($uuid, $source_uuid);
+
+    $ounit_values = $ounit->toArray();
+    // var_export($ounit_values);
+
+    // From 'title' to 'label'.
+    $this->assertEquals($node->label(), $ounit->label());
+
+    // From 'title' to 'name'.
+    $this->assertEquals([
+      [
+        'string' => 'Example Organizational Unit',
+        'lang' => 'en',
+      ],
+    ], $ounit_values['name'], 'name');
+
+    // From 'field_ou_abbreviation' to 'abbreviation'.
+    $this->assertEquals([
+      [
+        'value' => 'Example',
+      ],
+    ], $ounit_values['abbreviation'], 'abbreviation');
+
+    // From 'uuid' to 'ounit_id'.
+    $this->assertEquals($uuid, $ounit_values['ounit_id'][0]['value'], 'ounit_id');
+
+    // From 'field_ou_code' to 'ounit_code'.
+    $this->assertEquals([
+      [
+        'value' => 'OUX-1',
+      ],
+    ], $ounit_values['ounit_code'], 'ounit_code');
+
+    // From 'field_ou_web' to 'website_url'.
+    $this->assertEquals([
+      [
+        'uri' => 'https://example.com',
+        'title' => 'example.com',
+        'options' => [],
+        'lang' => 'en',
+      ],
+    ], $ounit_values['website_url'], 'website_url');
+
+    // From Group reference to 'parent_hei'.
+    $this->assertEquals([
+      [
+        'target_id' => '1',
+      ],
+    ], $ounit_values['parent_hei'], 'parent_hei');
+
   }
 
 }

@@ -18,7 +18,14 @@ class OunitFieldMapping implements FieldMappingInterface {
     return [
       'ounit' => [
         'ounit' => [
-          'title' => [
+          'label' => [
+            'properties' => [
+              'value' => 'value',
+            ],
+            'source' => 'title',
+            'transformer' => 'canonical',
+          ],
+          'name' => [
             'properties' => [
               'string' => 'value',
               'lang' => 'langcode',
@@ -49,7 +56,7 @@ class OunitFieldMapping implements FieldMappingInterface {
             'source' => 'field_ou_code',
             'transformer' => 'canonical',
           ],
-          'url' => [
+          'website_url' => [
             'properties' => [
               'uri' => 'uri',
               'title' => 'title',
