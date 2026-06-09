@@ -44,7 +44,7 @@ class GroupInstitution implements DataTransformerInterface {
    */
   public function transform(ContentEntityInterface $source, array $strategy): array {
     $output = [
-      ['target_id' => $this->entityManager->getGroupHeiId($source)],
+      ['target_id' => (string) $this->entityManager->getGroupHeiId($source)],
     ];
 
     return $output;

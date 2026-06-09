@@ -38,7 +38,7 @@ class GroupInstitutionTest extends UnitTestCase {
     $this->assertSame(
       [
         [
-          'target_id' => 1,
+          'target_id' => '1',
         ],
       ],
       $result

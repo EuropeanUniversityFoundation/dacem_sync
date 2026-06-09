@@ -6,6 +6,7 @@ namespace Drupal\dacem_sync\DataTransformer;
 
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\dacem_sync\DataTransformerInterface;
+use Toobo\Bcp47;
 
 /**
  * Defines a Multilingual data transformer.
@@ -37,7 +38,8 @@ class Multilingual implements DataTransformerInterface {
       foreach ($translation_field_data as $item) {
         $transformed = [];
 
-        $item['langcode'] = $langcode;
+        /** @var string $langcode */
+        $item['langcode'] = Bcp47::filterTag($langcode);
         foreach ($strategy['properties'] as $target_prop => $source_prop) {
           $transformed[$target_prop] = $item[$source_prop];
         }
