@@ -7,7 +7,7 @@ namespace Drupal\dacem_sync_ewp_ounits\FieldMapping;
 use Drupal\dacem_sync\FieldMappingInterface;
 
 /**
- * Defines a field mapping for 'ounit' from 'organizational_unit'.
+ * Maps 'ounit' from 'organizational_unit'.
  */
 class OunitFieldMapping implements FieldMappingInterface {
 
