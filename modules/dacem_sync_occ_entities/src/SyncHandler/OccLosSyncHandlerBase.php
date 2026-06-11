@@ -11,8 +11,6 @@ use Drupal\dacem_sync\SyncHandlerInterface;
  */
 abstract class OccLosSyncHandlerBase implements SyncHandlerInterface {
 
-  public const SYNC_HANDLER_ID = 'los_sync_handler';
-
   public const TARGET_ENTITY_TYPE_ID = 'occ_los';
   public const TARGET_UNIQUE_PER_HEI = 'code';
   public const TARGET_HEI_FIELD = 'hei';
