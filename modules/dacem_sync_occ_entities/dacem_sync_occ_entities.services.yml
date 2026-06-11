@@ -1,0 +1,22 @@
+services:
+  dacem_sync_occ_entities.event_subscriber:
+    class: Drupal\dacem_sync_occ_entities\EventSubscriber\ContentChangedEventSubscriber
+    arguments: ['@logger.factory', '@queue']
+    tags:
+      - { name: event_subscriber }
+
+  dacem_sync_occ_entities.course_sync_handler:
+    class: Drupal\dacem_sync_occ_entities\SyncHandler\CourseSyncHandler
+    arguments: ['@dacem_sync.entity_builder', '@dacem_sync.entity_manager', '@dacem_sync_occ_entities.course_field_mapping', '@logger.factory']
+    tags:
+      - { name: 'sync_handler'}
+  dacem_sync_occ_entities.course_field_mapping:
+    class: Drupal\dacem_sync_occ_entities\FieldMapping\CourseFieldMapping
+
+  dacem_sync_occ_entities.programme_sync_handler:
+    class: Drupal\dacem_sync_occ_entities\SyncHandler\ProgrammeSyncHandler
+    arguments: ['@dacem_sync.entity_builder', '@dacem_sync.entity_manager', '@dacem_sync_occ_entities.programme_field_mapping', '@logger.factory']
+    tags:
+      - { name: 'sync_handler'}
+  dacem_sync_occ_entities.programme_field_mapping:
+    class: Drupal\dacem_sync_occ_entities\FieldMapping\ProgrammeFieldMapping

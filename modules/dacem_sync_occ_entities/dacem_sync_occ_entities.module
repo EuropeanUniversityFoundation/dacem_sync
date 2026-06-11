@@ -1,0 +1,30 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * @file
+ * Primary module hooks for DACEM Sync OCC Entities module.
+ */
+
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\dacem_sync\EntityManager;
+use Drupal\dacem_sync_occ_entities\SyncHandler\OccLosSyncHandlerBase;
+
+/**
+ * Implements hook_entity_base_field_info_alter().
+ */
+function dacem_sync_occ_entities_entity_base_field_info(EntityTypeInterface $entity_type): array {
+  $fields = [];
+
+  if ($entity_type->id() === OccLosSyncHandlerBase::TARGET_ENTITY_TYPE_ID) {
+    $fields[EntityManager::BASE_FIELD] = BaseFieldDefinition::create('uuid')
+      ->setLabel(new TranslatableMarkup('Source UUID'))
+      ->setReadOnly(TRUE)
+      ->setCardinality(1);
+  }
+
+  return $fields;
+}
