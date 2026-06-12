@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\dacem_sync_occ_entities\Kernel;
 
-use Drupal\dacem_sync_occ_entities\SyncHandler\OccLosSyncHandlerBase;
 use Drupal\dacem_sync_occ_entities\SyncHandler\ProgrammeSyncHandler;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;

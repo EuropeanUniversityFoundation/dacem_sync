@@ -62,16 +62,23 @@ class ProgrammeSyncHandlerTest extends ProgrammeSyncHandlerTestBase {
       'field_eqf_level' => 6,
       'field_programme_abbreviation' => 'Example Programme',
       'field_programme_description' => 'Description of this Programme.',
-      'field_learning_opportunity_type' => '79343569f3', // Educational programme.
-      'field_programme_mode_of_study' => '72a0ab92fa', // Full time,
+    // Educational programme.
+      'field_learning_opportunity_type' => '79343569f3',
+    // Full time,.
+      'field_programme_mode_of_study' => '72a0ab92fa',
       'field_programme_mode_of_learning' => [
-        '9191af2ed9', // Presential.
-        '920fbb3cbe', // Online.
+    // Presential.
+        '9191af2ed9',
+    // Online.
+        '920fbb3cbe',
       ],
-      'field_isced_f' => '0011', // Basic programmes and qualifications.
+      // Basic programmes and qualifications.
+      'field_isced_f' => '0011',
       'field_programme_language_of_inst' => [
-        1, // English.
-        2, // Portuguese (Portugal).
+      // English.
+        1,
+      // Portuguese (Portugal).
+        2,
       ],
       'field_programme_learn_outcomes' => 'Learning outcomes of this Programme.',
       'field_length_of_programme' => 6,
@@ -134,91 +141,92 @@ class ProgrammeSyncHandlerTest extends ProgrammeSyncHandlerTestBase {
     $programme = LearningOpportunitySpecification::load(1);
     $values = $programme->toArray();
 
-    // From 'title' to 'label'.
+    // 'title' to 'label'.
     $this->assertEquals(
       $node->label(),
       $programme->label(),
     );
 
-    // From 'title' to 'title'.
+    // 'title' to 'title'.
     $expected = [
       [
         'string' => 'Example Degree Programme',
         'lang' => 'en',
       ],
     ];
-    $this->assertEquals($expected, $values['title'], 'title');
+    $this->assertEquals($expected, $values['title']);
 
-    // From 'field_programme_code' to 'code'.
+    // 'field_programme_code' to 'code'.
     $expected = [['value' => 'PROG-1']];
-    $this->assertEquals($expected, $values['code'], 'code');
+    $this->assertEquals($expected, $values['code']);
 
-    // From 'field_credits' to 'programme__ects'.
+    // 'field_credits' to 'programme__ects'.
     $expected = [['value' => 180]];
-    $this->assertEquals($expected, $values['programme__ects'], 'programme__ects');
+    $this->assertEquals($expected, $values['programme__ects']);
 
-    // From 'field_eqf_level' to 'programme__eqf_level_provided'.
+    // 'field_eqf_level' to 'programme__eqf_level_provided'.
     $expected = [['value' => 6]];
-    $this->assertEquals($expected, $values['programme__eqf_level_provided'], 'programme__eqf_level_provided');
+    $this->assertEquals($expected, $values['programme__eqf_level_provided']);
 
-    // From 'field_programme_abbreviation' to 'programme__abbreviation'.
+    // 'field_programme_abbreviation' to 'programme__abbreviation'.
     $expected = [
       [
         'string' => 'Example Programme',
         'lang' => 'en',
       ],
     ];
-    $this->assertEquals($expected, $values['programme__abbreviation'], 'programme__abbreviation');
+    $this->assertEquals($expected, $values['programme__abbreviation']);
 
-    // From 'field_programme_description' to 'description'.
+    // 'field_programme_description' to 'description'.
     $expected = [
       [
         'multiline' => 'Description of this Programme.',
         'lang' => 'en',
       ],
     ];
-    $this->assertEquals($expected, $values['description'], 'description');
+    $this->assertEquals($expected, $values['description']);
 
-    // From 'field_learning_opportunity_type' to 'programme__elm_lo_type'.
+    // 'field_learning_opportunity_type' to 'programme__elm_lo_type'.
     $expected = [['value' => '79343569f3']];
-    $this->assertEquals($expected, $values['programme__elm_lo_type'], 'programme__elm_lo_type');
+    $this->assertEquals($expected, $values['programme__elm_lo_type']);
 
-    // From 'field_programme_mode_of_study' to 'programme__elm_learning_schedule'.
+    // 'field_programme_mode_of_study' to 'programme__elm_learning_schedule'.
     $expected = [['value' => '72a0ab92fa']];
-    $this->assertEquals($expected, $values['programme__elm_learning_schedule'], 'programme__elm_learning_schedule');
+    $this->assertEquals($expected, $values['programme__elm_learning_schedule']);
 
-    // From 'field_programme_mode_of_learning' to 'programme__elm_mode_of_learning'.
+    // 'field_programme_mode_of_learning' to 'programme__elm_mode_of_learning'.
     $expected = [
       ['value' => '9191af2ed9'],
       ['value' => '920fbb3cbe'],
     ];
-    $this->assertEquals($expected, $values['programme__elm_mode_of_learning'], 'programme__elm_mode_of_learning');
+    $this->assertEquals($expected, $values['programme__elm_mode_of_learning']);
 
-    // From 'field_isced_f' to 'programme__isced_code'.
+    // 'field_isced_f' to 'programme__isced_code'.
     $expected = [['value' => '0011']];
-    $this->assertEquals($expected, $values['programme__isced_code'], 'programme__isced_code');
+    $this->assertEquals($expected, $values['programme__isced_code']);
 
-    // From 'field_programme_language_of_inst' to 'language_of_instruction'.
+    // 'field_programme_language_of_inst' to 'language_of_instruction'.
     $expected = [
       ['lang' => 'en'],
       ['lang' => 'pt-PT'],
     ];
-    $this->assertEquals($expected, $values['language_of_instruction'], 'language_of_instruction');
+    $this->assertEquals($expected, $values['language_of_instruction']);
 
-    // From 'field_programme_learn_outcomes' to 'learning_outcomes'.
+    // 'field_programme_learn_outcomes' to 'learning_outcomes'.
     $expected = [
       [
         'multiline' => 'Learning outcomes of this Programme.',
         'lang' => 'en',
       ],
     ];
-    $this->assertEquals($expected, $values['learning_outcomes'], 'learning_outcomes');
+    $this->assertEquals($expected, $values['learning_outcomes']);
 
-    // From 'field_length_of_programme' and 'field_number_of_terms' to 'programme__length'.
+    // 'field_length_of_programme' to 'programme__length'.
+    // 'field_number_of_terms' to 'programme__length'.
     $expected = [['value' => '6/2']];
-    $this->assertEquals($expected, $values['programme__length'], 'programme__length');
+    $this->assertEquals($expected, $values['programme__length']);
 
-    // From 'field_programme_web' to 'url'.
+    // 'field_programme_web' to 'url'.
     $expected = [
       [
         'uri' => 'https://example.com/programme/1',
@@ -227,15 +235,15 @@ class ProgrammeSyncHandlerTest extends ProgrammeSyncHandlerTestBase {
         'lang' => 'en',
       ],
     ];
-    $this->assertEquals($expected, $values['url'], 'url');
+    $this->assertEquals($expected, $values['url']);
 
-    // From 'field_programme_start_date' to 'programme__valid_since'.
+    // 'field_programme_start_date' to 'programme__valid_since'.
     $expected = [['value' => '2020-01-01']];
-    $this->assertEquals($expected, $values['programme__valid_since'], 'programme__valid_since');
+    $this->assertEquals($expected, $values['programme__valid_since']);
 
-    // From 'field_programme_end_date' to 'programme__valid_until'.
+    // 'field_programme_end_date' to 'programme__valid_until'.
     $expected = [['value' => '2030-12-31']];
-    $this->assertEquals($expected, $values['programme__valid_until'], 'programme__valid_until');
+    $this->assertEquals($expected, $values['programme__valid_until']);
 
     // From Group reference to 'hei'.
     $expected = [['target_id' => '1']];
