@@ -9,13 +9,28 @@ services:
     arguments: []
     tags:
       - { name: 'data_transformer'}
+  dacem_sync.data_transformer.fraction:
+    class: Drupal\dacem_sync\DataTransformer\Fraction
+    arguments: []
+    tags:
+      - { name: 'data_transformer'}
   dacem_sync.data_transformer.group_hei:
     class: Drupal\dacem_sync\DataTransformer\GroupInstitution
     arguments: ['@dacem_sync.entity_manager']
     tags:
       - { name: 'data_transformer'}
+  dacem_sync.data_transformer.int_to_float:
+    class: Drupal\dacem_sync\DataTransformer\IntToFloat
+    arguments: []
+    tags:
+      - { name: 'data_transformer'}
   dacem_sync.data_transformer.multilingual:
     class: Drupal\dacem_sync\DataTransformer\Multilingual
+    arguments: []
+    tags:
+      - { name: 'data_transformer'}
+  dacem_sync.data_transformer.referenced_entity_field:
+    class: Drupal\dacem_sync\DataTransformer\ReferencedEntityField
     arguments: []
     tags:
       - { name: 'data_transformer'}

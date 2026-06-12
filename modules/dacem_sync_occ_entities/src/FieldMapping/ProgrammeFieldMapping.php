@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\dacem_sync_occ_entities\FieldMapping;
 
+use Drupal\dacem_sync\DataTransformer\ReferencedEntityField;
 use Drupal\dacem_sync\FieldMappingInterface;
 
 /**
@@ -99,10 +100,14 @@ class ProgrammeFieldMapping implements FieldMappingInterface {
           ],
           'language_of_instruction' => [
             'properties' => [
-              'value' => 'value',
+              'lang' => 'lang',
             ],
             'required' => TRUE,
-            'source' => 'field_programme_language_of_inst.term.field_UNKNOWN',
+            'source' => implode(ReferencedEntityField::GLUE, [
+              'field_programme_language_of_inst',
+              'term',
+              'field_lang',
+            ]),
             'transformer' => 'referenced_entity_field',
           ],
           'learning_outcomes' => [
@@ -116,12 +121,12 @@ class ProgrammeFieldMapping implements FieldMappingInterface {
           ],
           'programme__length' => [
             'properties' => [
-              'value' => 'concat',
+              'value' => NULL,
             ],
             'required' => TRUE,
             'source' => [
-              'field_length_of_programme',
-              'field_number_of_terms',
+              'field_length_of_programme.value',
+              'field_number_of_terms.value',
             ],
             'transformer' => 'fraction',
           ],

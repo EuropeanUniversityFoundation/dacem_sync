@@ -29,16 +29,22 @@ class DataTransformerResolverTest extends KernelTestBase {
     $collector = $this->container->get('dacem_sync.data_transformer_resolver');
 
     $canonical = $collector->get('canonical');
-
     $this->assertInstanceOf(DataTransformerInterface::class, $canonical);
 
-    $group_hei = $collector->get('group_hei');
+    $fraction = $collector->get('fraction');
+    $this->assertInstanceOf(DataTransformerInterface::class, $fraction);
 
+    $group_hei = $collector->get('group_hei');
     $this->assertInstanceOf(DataTransformerInterface::class, $group_hei);
 
-    $multilingual = $collector->get('multilingual');
+    $int_to_float = $collector->get('int_to_float');
+    $this->assertInstanceOf(DataTransformerInterface::class, $int_to_float);
 
+    $multilingual = $collector->get('multilingual');
     $this->assertInstanceOf(DataTransformerInterface::class, $multilingual);
+
+    $referenced_entity_field = $collector->get('referenced_entity_field');
+    $this->assertInstanceOf(DataTransformerInterface::class, $referenced_entity_field);
   }
 
 }
