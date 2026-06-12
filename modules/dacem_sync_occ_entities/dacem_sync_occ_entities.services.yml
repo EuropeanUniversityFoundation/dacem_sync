@@ -5,6 +5,17 @@ services:
     tags:
       - { name: event_subscriber }
 
+  dacem_sync_occ_entities.data_transformer.academic_term:
+    class: Drupal\dacem_sync_occ_entities\DataTransformer\AcademicTerm
+    arguments: []
+    tags:
+      - { name: 'data_transformer'}
+  dacem_sync_occ_entities.data_transformer.negate:
+    class: Drupal\dacem_sync_occ_entities\DataTransformer\Negate
+    arguments: []
+    tags:
+      - { name: 'data_transformer'}
+
   dacem_sync_occ_entities.course_sync_handler:
     class: Drupal\dacem_sync_occ_entities\SyncHandler\CourseSyncHandler
     arguments: ['@dacem_sync.entity_builder', '@dacem_sync.entity_manager', '@dacem_sync_occ_entities.course_field_mapping', '@logger.factory']
