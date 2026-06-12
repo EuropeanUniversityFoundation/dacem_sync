@@ -30,6 +30,9 @@ class IntToFloatTest extends UnitTestCase {
         [
           'value' => -1,
         ],
+        [
+          'value' => 100.001,
+        ],
     ]);
 
     $entity = $this->createMock(ContentEntityInterface::class);
@@ -53,10 +56,13 @@ class IntToFloatTest extends UnitTestCase {
     $this->assertSame(
       [
         [
-          'value' => 1.00,
+          'value' => '1.00',
         ],
         [
-          'value' => -1.00,
+          'value' => '-1.00',
+        ],
+        [
+          'value' => '100.00',
         ],
       ],
       $result

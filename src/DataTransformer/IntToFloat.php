@@ -32,8 +32,8 @@ class IntToFloat implements DataTransformerInterface {
       $transformed = [];
       foreach ($strategy['properties'] as $target_prop => $source_prop) {
         if (array_key_exists($source_prop, $item)) {
-          $int_value = (int) $item[$source_prop];
-          $transformed[$target_prop] = (float) $int_value;
+          $float = (float) $item[$source_prop];
+          $transformed[$target_prop] = number_format($float, 2);
         }
       }
 
