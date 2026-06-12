@@ -36,7 +36,7 @@ class ProgrammeFieldMapping implements FieldMappingInterface {
             'source' => 'field_programme_code',
             'transformer' => 'canonical',
           ],
-          'ects' => [
+          'programme__ects' => [
             'properties' => [
               'value' => 'value',
             ],
@@ -44,7 +44,7 @@ class ProgrammeFieldMapping implements FieldMappingInterface {
             'source' => 'field_credits',
             'transformer' => 'int_to_float',
           ],
-          'eqf_level_provided' => [
+          'programme__eqf_level_provided' => [
             'properties' => [
               'value' => 'value',
             ],
@@ -52,7 +52,7 @@ class ProgrammeFieldMapping implements FieldMappingInterface {
             'source' => 'field_eqf_level',
             'transformer' => 'canonical',
           ],
-          'abbreviation' => [
+          'programme__abbreviation' => [
             'properties' => [
               'string' => 'value',
               'lang' => 'langcode',

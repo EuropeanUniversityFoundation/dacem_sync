@@ -15,4 +15,6 @@ abstract class OccLosSyncHandlerBase implements SyncHandlerInterface {
   public const TARGET_UNIQUE_PER_HEI = 'code';
   public const TARGET_HEI_FIELD = 'hei';
 
+  public const LANG_VOCABULARY = 'languages_of_instuction';
+
 }
