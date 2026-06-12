@@ -323,6 +323,24 @@ class ProgrammeSyncHandlerTestBase extends OccLosSyncHandlerTestBase {
     ]);
     $field_instance->save();
 
+    // Create the field storage for Content.
+    $field_storage = FieldStorageConfig::create([
+      'field_name' => 'field_programme_qualification',
+      'entity_type' => ProgrammeSyncHandler::SOURCE_ENTITY_TYPE_ID,
+      'type' => 'text_long',
+      'cardinality' => 1,
+    ]);
+    $field_storage->save();
+
+    // Create the field config for the relevant Content type.
+    $field_instance = FieldConfig::create([
+      'field_storage' => $field_storage,
+      'bundle' => ProgrammeSyncHandler::SOURCE_BUNDLE,
+      'label' => 'Qualification',
+      'required' => FALSE,
+    ]);
+    $field_instance->save();
+
   }
 
 }
