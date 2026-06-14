@@ -13,7 +13,7 @@ use Drupal\field\Entity\FieldStorageConfig;
  *
  * @group dacem_sync
  */
-class CourseSyncHandlerTestBase extends OccLosSyncHandlerTestBase {
+class CourseSyncHandlerTestBase extends ProgrammeSyncHandlerTestBase {
 
   /**
    * {@inheritdoc}
@@ -39,14 +39,12 @@ class CourseSyncHandlerTestBase extends OccLosSyncHandlerTestBase {
     ]);
     $field_instance->save();
 
-    // Create the field storage for Content.
-    $field_storage = FieldStorageConfig::create([
-      'field_name' => 'field_credits',
-      'entity_type' => CourseSyncHandler::SOURCE_ENTITY_TYPE_ID,
-      'type' => 'integer',
-      'cardinality' => 1,
+    // Field storage is defined upstream.
+    $field_storage_key = implode('.', [
+      CourseSyncHandler::SOURCE_ENTITY_TYPE_ID,
+      'field_credits',
     ]);
-    $field_storage->save();
+    $field_storage = FieldStorageConfig::load($field_storage_key);
 
     // Create the field config for the relevant Content type.
     $field_instance = FieldConfig::create([
@@ -62,7 +60,7 @@ class CourseSyncHandlerTestBase extends OccLosSyncHandlerTestBase {
       'field_name' => 'field_iec_term',
       'entity_type' => CourseSyncHandler::SOURCE_ENTITY_TYPE_ID,
       'type' => 'integer',
-      'cardinality' => 1,
+      'cardinality' => -1,
     ]);
     $field_storage->save();
 

@@ -425,7 +425,7 @@ class ProgrammeSyncHandlerTest extends ProgrammeSyncHandlerTestBase {
   }
 
   /**
-   * Tests the onIDelete workflow.
+   * Tests the onDelete workflow.
    */
   public function testOnDelete(): void {
     $queue = $this->container->get('queue')

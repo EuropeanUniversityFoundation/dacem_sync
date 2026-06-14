@@ -27,7 +27,7 @@ class CourseSyncHandler extends OccLosSyncHandlerBase implements SyncHandlerInte
   public const TARGET_BUNDLE = 'course';
   public const TARGET_UNIQUE_PER_HEI = parent::TARGET_UNIQUE_PER_HEI;
   public const TARGET_HEI_FIELD = parent::TARGET_HEI_FIELD;
-  public const TARGET_OFF_SWITCH = 'deprecated';
+  public const TARGET_OFF_SWITCH = 'course__deprecated';
   public const TARGET_OFF_STATE = TRUE;
 
   /**
