@@ -32,7 +32,7 @@ class Negate implements DataTransformerInterface {
       $transformed = [];
       foreach ($strategy['properties'] as $target_prop => $source_prop) {
         if (array_key_exists($source_prop, $item)) {
-          $transformed[$target_prop] = !$item[$source_prop];
+          $transformed[$target_prop] = (string) (int) !$item[$source_prop];
         }
       }
 

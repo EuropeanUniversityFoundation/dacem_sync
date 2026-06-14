@@ -50,7 +50,7 @@ class NegateTest extends UnitTestCase {
     $this->assertSame(
       [
         [
-          'value' => FALSE,
+          'value' => '0',
         ],
       ],
       $result
