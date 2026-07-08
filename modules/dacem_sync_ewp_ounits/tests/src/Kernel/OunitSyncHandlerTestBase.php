@@ -13,6 +13,7 @@ use Drupal\group\Entity\GroupType;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\language\Entity\ConfigurableLanguage;
 use Drupal\node\Entity\NodeType;
+use Drupal\node\Entity\Node;
 
 /**
  * Setup for testing OunitSyncHandler.
@@ -204,6 +205,67 @@ class OunitSyncHandlerTestBase extends KernelTestBase {
 
     // Add a language for content translation.
     ConfigurableLanguage::createFromLangcode('pt-pt')->save();
+
+    // Create an Institution.
+    $entity_type_manager = $this->container->get('entity_type.manager');
+
+    $hei = $entity_type_manager->getStorage('hei')->create([
+      'label' => 'Example Institution',
+      'hei_id' => 'example.com',
+      'name' => [
+        [
+          'string' => 'Example Institution',
+          'lang' => 'en',
+        ],
+      ],
+    ]);
+    $hei->save();
+
+    // Create a Group referencing the Institution.
+    $group = $entity_type_manager->getStorage('group')->create([
+      'type' => EntityManager::GROUP_TYPE_ID,
+      'label' => 'Example Group',
+      EntityManager::GROUP_HEI_REF => $hei->id(),
+    ]);
+    $group->save();
+
+    // Create a Node.
+    $node = Node::create([
+      'type' => OunitSyncHandler::SOURCE_BUNDLE,
+      'title' => 'Example Organizational Unit',
+      'field_ou_abbreviation' => 'Example',
+      'field_ou_code' => 'OUX-1',
+      'field_ou_description' => 'Description of this Organizational Unit.',
+      'field_ou_web' => [
+        'uri' => 'https://example.com',
+        'title' => 'example.com',
+      ],
+      'status' => 1,
+    ]);
+    $node->save();
+
+    // Add a Relationship between the Group and the Node.
+    $plugin_id = implode(':', ['group_node', OunitSyncHandler::SOURCE_BUNDLE]);
+
+    $relationship_type = \Drupal::entityTypeManager()
+      ->getStorage('group_relationship_type')
+      ->loadByProperties([
+        'group_type' => EntityManager::GROUP_TYPE_ID,
+        'content_plugin' => $plugin_id,
+      ]);
+
+    $relationship_type = reset($relationship_type);
+
+    $relationship = \Drupal::entityTypeManager()
+      ->getStorage('group_relationship')
+      ->create([
+        'type' => $relationship_type->id(),
+        'gid' => $group->id(),
+        'entity_id' => $node->id(),
+      ]);
+
+    $relationship->save();
+
   }
 
 }
