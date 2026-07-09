@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\dacem_sync_occ_entities\Kernel;
 
+use Drupal\dacem_sync\EntityManager;
 use Drupal\dacem_sync_occ_entities\SyncHandler\CourseSyncHandler;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\node\Entity\Node;
 
 /**
  * Setup for testing CourseSyncHandler.
@@ -417,6 +419,79 @@ class CourseSyncHandlerTestBase extends ProgrammeSyncHandlerTestBase {
       'required' => FALSE,
     ]);
     $field_instance->save();
+
+    // Create a Node of type Individual Educational Component.
+    $node = Node::create([
+      'type' => CourseSyncHandler::SOURCE_BUNDLE,
+      'title' => 'Example Course',
+      'field_iec_code' => 'CR-1',
+      'field_credits' => 6,
+      'field_iec_term' => [1, 2],
+    // Programme created during parent setup is the first LOS.
+      'field_iec_programme' => '1',
+      'field_iec_description' => 'Description of this Course.',
+    // Written examination.
+      'field_assessment_method_types' => '6e6cb2cc78',
+    // Classroom coursework.
+      'field_iec_activity_types' => 'ff436ea7c9',
+    // Course.
+      'field_iec_elm_type' => '05053c1cbe',
+      'field_iec_modality' => [
+    // Presential.
+        '9191af2ed9',
+    // Online.
+        '920fbb3cbe',
+      ],
+      // Basic courses and qualifications.
+      'field_fields_of_study' => '0011',
+      'field_iec_language_of_instructio' => [
+        // Portuguese (Portugal).
+        2,
+      // English.
+        1,
+      ],
+      'field_iec_learning_outcomes' => 'Learning outcomes of this Course.',
+      'field_iec_avaliable_for_mobility' => TRUE,
+      'field_iec_restricted_alliance' => FALSE,
+      'field_iec_web' => [
+        'uri' => 'https://example.com/course/1',
+        'title' => 'example.com/course/1',
+      ],
+      'field_iec_recommendations' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      'field_iec_contents' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      'field_iec_requirements' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      'field_iec_planned_activities' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      'field_iec_evaluation' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      'field_iec_coordinator' => 'Anonymous',
+      'status' => 1,
+    ]);
+    $node->save();
+
+    // Add a Relationship between the Group and the Node.
+    $plugin_id = implode(':', [
+      'group_node',
+      CourseSyncHandler::SOURCE_BUNDLE,
+    ]);
+
+    $relationship_type = \Drupal::entityTypeManager()
+      ->getStorage('group_relationship_type')
+      ->loadByProperties([
+        'group_type' => EntityManager::GROUP_TYPE_ID,
+        'content_plugin' => $plugin_id,
+      ]);
+
+    $relationship_type = reset($relationship_type);
+
+    $relationship = \Drupal::entityTypeManager()
+      ->getStorage('group_relationship')
+      ->create([
+        'type' => $relationship_type->id(),
+      // Group created during parent setup is the first group.
+        'gid' => '1',
+        'entity_id' => $node->id(),
+      ]);
+
+    $relationship->save();
 
   }
 

@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\dacem_sync_occ_entities\Kernel;
 
+use Drupal\dacem_sync\EntityManager;
 use Drupal\dacem_sync_occ_entities\SyncHandler\ProgrammeSyncHandler;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\node\Entity\Node;
 
 /**
  * Setup for testing ProgrammeSyncHandler.
@@ -340,6 +342,94 @@ class ProgrammeSyncHandlerTestBase extends OccLosSyncHandlerTestBase {
       'required' => FALSE,
     ]);
     $field_instance->save();
+
+    // Create an Institution.
+    $entity_type_manager = $this->container->get('entity_type.manager');
+
+    $hei = $entity_type_manager->getStorage('hei')->create([
+      'label' => 'Example Institution',
+      'hei_id' => 'example.com',
+      'name' => [
+        [
+          'string' => 'Example Institution',
+          'lang' => 'en',
+        ],
+      ],
+    ]);
+    $hei->save();
+
+    // Create a Group referencing the Institution.
+    $group = $entity_type_manager->getStorage('group')->create([
+      'type' => EntityManager::GROUP_TYPE_ID,
+      'label' => 'Example Group',
+      EntityManager::GROUP_HEI_REF => $hei->id(),
+    ]);
+    $group->save();
+
+    // Create a Node of type Programme.
+    $programme = Node::create([
+      'type' => ProgrammeSyncHandler::SOURCE_BUNDLE,
+      'title' => 'Example Degree Programme',
+      'field_programme_code' => 'PROG-1',
+      'field_credits' => 180,
+      'field_eqf_level' => 6,
+      'field_programme_abbreviation' => 'Example Programme',
+      'field_programme_description' => 'Description of this Programme.',
+    // Educational programme.
+      'field_learning_opportunity_type' => '79343569f3',
+    // Full time.
+      'field_programme_mode_of_study' => '72a0ab92fa',
+      'field_programme_mode_of_learning' => [
+    // Presential.
+        '9191af2ed9',
+    // Online.
+        '920fbb3cbe',
+      ],
+      // Basic programmes and qualifications.
+      'field_isced_f' => '0011',
+      'field_programme_language_of_inst' => [
+      // English.
+        1,
+      // Portuguese (Portugal).
+        2,
+      ],
+      'field_programme_learn_outcomes' => 'Learning outcomes of this Programme.',
+      'field_length_of_programme' => 6,
+      'field_number_of_terms' => 2,
+      'field_programme_web' => [
+        'uri' => 'https://example.com/programme/1',
+        'title' => 'example.com/programme/1',
+      ],
+      'field_programme_start_date' => '2020-01-01',
+      'field_programme_end_date' => '2030-12-31',
+      'status' => 1,
+    ]);
+    $programme->save();
+
+    // Add a Relationship between the Group and the Node.
+    $plugin_id = implode(':', [
+      'group_node',
+      ProgrammeSyncHandler::SOURCE_BUNDLE,
+    ]);
+
+    $relationship_type = \Drupal::entityTypeManager()
+      ->getStorage('group_relationship_type')
+      ->loadByProperties([
+        'group_type' => EntityManager::GROUP_TYPE_ID,
+        'content_plugin' => $plugin_id,
+      ]);
+
+    $relationship_type = reset($relationship_type);
+
+    $relationship = \Drupal::entityTypeManager()
+      ->getStorage('group_relationship')
+      ->create([
+        'type' => $relationship_type->id(),
+        'gid' => $group->id(),
+        'entity_id' => $programme->id(),
+      ]);
+
+    $relationship->save();
 
   }
 

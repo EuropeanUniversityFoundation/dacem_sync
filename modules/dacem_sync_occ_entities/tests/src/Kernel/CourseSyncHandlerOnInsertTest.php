@@ -7,7 +7,6 @@ namespace Drupal\Tests\dacem_sync_occ_entities\Kernel;
 use Drupal\dacem_sync\EntityManager;
 use Drupal\dacem_sync\Plugin\QueueWorker\DacemSyncQueueWorker;
 use Drupal\dacem_sync_occ_entities\SyncHandler\CourseSyncHandler;
-use Drupal\dacem_sync_occ_entities\SyncHandler\ProgrammeSyncHandler;
 use Drupal\node\Entity\Node;
 use Drupal\occ_entities\Entity\LearningOpportunitySpecification;
 
@@ -16,163 +15,7 @@ use Drupal\occ_entities\Entity\LearningOpportunitySpecification;
  *
  * @group dacem_sync
  */
-class CourseSyncHandlerTest extends CourseSyncHandlerTestBase {
-
-  /**
-   * The sync handler.
-   *
-   * @var \Drupal\dacem_sync_occ_entities\SyncHandler\CourseSyncHandler
-   */
-  protected $syncHandler;
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp(): void {
-    parent::setUp();
-
-    // Create an Institution.
-    $entity_type_manager = $this->container->get('entity_type.manager');
-
-    $hei = $entity_type_manager->getStorage('hei')->create([
-      'label' => 'Example Institution',
-      'hei_id' => 'example.com',
-      'name' => [
-        [
-          'string' => 'Example Institution',
-          'lang' => 'en',
-        ],
-      ],
-    ]);
-    $hei->save();
-
-    // Create a Group referencing the Institution.
-    $group = $entity_type_manager->getStorage('group')->create([
-      'type' => EntityManager::GROUP_TYPE_ID,
-      'label' => 'Example Group',
-      EntityManager::GROUP_HEI_REF => $hei->id(),
-    ]);
-    $group->save();
-
-    // Create a Node of type Programme.
-    $programme = Node::create([
-      'type' => ProgrammeSyncHandler::SOURCE_BUNDLE,
-      'title' => 'Example Degree Programme',
-      'field_programme_code' => 'PROG-1',
-      'field_credits' => 180,
-      'field_eqf_level' => 6,
-      'field_programme_description' => 'Description of this Programme.',
-      // Basic programmes and qualifications.
-      'field_isced_f' => '0011',
-      'field_programme_language_of_inst' => [
-      // English.
-        1,
-      // Portuguese (Portugal).
-        2,
-      ],
-      'field_programme_learn_outcomes' => 'Learning outcomes of this Programme.',
-      'field_length_of_programme' => 12,
-      'field_number_of_terms' => 4,
-      'status' => 1,
-    ]);
-    $programme->save();
-
-    // Add a Relationship between the Group and the Programme.
-    $plugin_id = implode(':', [
-      'group_node',
-      ProgrammeSyncHandler::SOURCE_BUNDLE,
-    ]);
-
-    $relationship_type = \Drupal::entityTypeManager()
-      ->getStorage('group_relationship_type')
-      ->loadByProperties([
-        'group_type' => EntityManager::GROUP_TYPE_ID,
-        'content_plugin' => $plugin_id,
-      ]);
-
-    $relationship_type = reset($relationship_type);
-
-    $relationship = \Drupal::entityTypeManager()
-      ->getStorage('group_relationship')
-      ->create([
-        'type' => $relationship_type->id(),
-        'gid' => $group->id(),
-        'entity_id' => $programme->id(),
-      ]);
-
-    $relationship->save();
-
-    // Create a Node of type Individual Educational Component.
-    $node = Node::create([
-      'type' => CourseSyncHandler::SOURCE_BUNDLE,
-      'title' => 'Example Course',
-      'field_iec_code' => 'CR-1',
-      'field_credits' => 6,
-      'field_iec_term' => [1, 3],
-      'field_iec_programme' => $programme->id(),
-      'field_iec_description' => 'Description of this Course.',
-    // Written examination.
-      'field_assessment_method_types' => '6e6cb2cc78',
-    // Classroom coursework.
-      'field_iec_activity_types' => 'ff436ea7c9',
-    // Course.
-      'field_iec_elm_type' => '05053c1cbe',
-      'field_iec_modality' => [
-    // Presential.
-        '9191af2ed9',
-    // Online.
-        '920fbb3cbe',
-      ],
-      // Basic courses and qualifications.
-      'field_fields_of_study' => '0011',
-      'field_iec_language_of_instructio' => [
-        // Portuguese (Portugal).
-        2,
-      // English.
-        1,
-      ],
-      'field_iec_learning_outcomes' => 'Learning outcomes of this Course.',
-      'field_iec_avaliable_for_mobility' => TRUE,
-      'field_iec_restricted_alliance' => FALSE,
-      'field_iec_web' => [
-        'uri' => 'https://example.com/course/1',
-        'title' => 'example.com/course/1',
-      ],
-      'field_iec_recommendations' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      'field_iec_contents' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      'field_iec_requirements' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      'field_iec_planned_activities' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      'field_iec_evaluation' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      'field_iec_coordinator' => 'Anonymous',
-      'status' => 1,
-    ]);
-    $node->save();
-
-    // Add a Relationship between the Group and the Node.
-    $plugin_id = implode(':', [
-      'group_node',
-      CourseSyncHandler::SOURCE_BUNDLE,
-    ]);
-
-    $relationship_type = \Drupal::entityTypeManager()
-      ->getStorage('group_relationship_type')
-      ->loadByProperties([
-        'group_type' => EntityManager::GROUP_TYPE_ID,
-        'content_plugin' => $plugin_id,
-      ]);
-
-    $relationship_type = reset($relationship_type);
-
-    $relationship = \Drupal::entityTypeManager()
-      ->getStorage('group_relationship')
-      ->create([
-        'type' => $relationship_type->id(),
-        'gid' => $group->id(),
-        'entity_id' => $node->id(),
-      ]);
-
-    $relationship->save();
-  }
+class CourseSyncHandlerOnInsertTest extends CourseSyncHandlerTestBase {
 
   /**
    * Tests the onInsert workflow.
@@ -242,8 +85,8 @@ class CourseSyncHandlerTest extends CourseSyncHandlerTestBase {
     // 'field_iec_term' to 'course__academic_term'.
     // 'field_iec_programme.field_number_of_terms' to 'course__academic_term'.
     $expected = [
-      ['value' => '1/4'],
-      ['value' => '3/4'],
+      ['value' => '1/2'],
+      ['value' => '2/2'],
     ];
     $this->assertEquals($expected, $values['course__academic_term']);
 
