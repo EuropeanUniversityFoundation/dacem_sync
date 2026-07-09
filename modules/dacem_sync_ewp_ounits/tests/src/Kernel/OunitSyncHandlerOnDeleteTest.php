@@ -14,7 +14,7 @@ use Drupal\node\Entity\Node;
  *
  * @group dacem_sync
  */
-class OunitSyncHandlerDeleteTest extends OunitSyncHandlerTestBase {
+class OunitSyncHandlerOnDeleteTest extends OunitSyncHandlerTestBase {
 
   /**
    * Tests the onDelete workflow.

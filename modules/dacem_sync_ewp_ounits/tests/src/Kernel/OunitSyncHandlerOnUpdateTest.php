@@ -14,7 +14,7 @@ use Drupal\node\Entity\Node;
  *
  * @group dacem_sync
  */
-class OunitSyncHandlerUpdateTest extends OunitSyncHandlerTestBase {
+class OunitSyncHandlerOnUpdateTest extends OunitSyncHandlerTestBase {
 
   /**
    * Tests the onUpdate workflow.

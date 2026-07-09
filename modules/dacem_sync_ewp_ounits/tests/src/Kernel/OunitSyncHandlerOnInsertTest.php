@@ -14,7 +14,7 @@ use Drupal\node\Entity\Node;
  *
  * @group dacem_sync
  */
-class OunitSyncHandlerInsertTest extends OunitSyncHandlerTestBase {
+class OunitSyncHandlerOnInsertTest extends OunitSyncHandlerTestBase {
 
   /**
    * Tests the onInsert workflow.
