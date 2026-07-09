@@ -155,6 +155,26 @@ class ProgrammeSyncHandler extends OccLosSyncHandlerBase implements SyncHandlerI
     }
     else {
       $this->entityBuilder->updateTargetFromSource($target, $source, $map);
+
+      $target_state = (bool) $target->get(self::TARGET_OFF_SWITCH)->getString();
+
+      if ((bool) $target_state == (bool) self::TARGET_OFF_STATE) {
+        /** @var \Drupal\Core\Entity\ContentEntityInterface $target */
+        // @phpstan-ignore booleanNot.alwaysTrue
+        $target->set(self::TARGET_OFF_SWITCH, !self::TARGET_OFF_STATE);
+
+        if ($target instanceof RevisionableInterface) {
+          $target->setNewRevision(TRUE);
+        }
+
+        if ($target instanceof RevisionLogInterface) {
+          $target->setRevisionLogMessage(
+            sprintf('Republished at %s', time())
+          );
+        }
+
+        $target->save();
+      }
     }
 
   }

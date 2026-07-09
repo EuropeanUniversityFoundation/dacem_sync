@@ -6,17 +6,17 @@ namespace Drupal\Tests\dacem_sync_occ_entities\Kernel;
 
 use Drupal\dacem_sync\EntityManager;
 use Drupal\dacem_sync\Plugin\QueueWorker\DacemSyncQueueWorker;
-use Drupal\dacem_sync_occ_entities\SyncHandler\CourseSyncHandler;
+use Drupal\dacem_sync_occ_entities\SyncHandler\ProgrammeSyncHandler;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
 use Drupal\occ_entities\Entity\LearningOpportunitySpecification;
 
 /**
- * Tests CourseSyncHandler.
+ * Tests ProgrammeSyncHandler.
  *
  * @group dacem_sync
  */
-class CourseSyncHandlerOnInsertAfterDeleteTest extends CourseSyncHandlerTestBase {
+class ProgrammeSyncHandlerOnInsertAfterDeleteTest extends ProgrammeSyncHandlerTestBase {
 
   /**
    * Tests the onInsert workflow after a deletion.
@@ -42,26 +42,12 @@ class CourseSyncHandlerOnInsertAfterDeleteTest extends CourseSyncHandlerTestBase
     $this->assertIsObject($item);
     $worker->processItem($item->data);
 
-    // Third item: course insert.
-    $item = $queue->claimItem();
-    $this->assertNotNull($item);
-    $this->assertNotFalse($item);
-    $this->assertIsObject($item);
-    $worker->processItem($item->data);
-
-    // Fourth item: course update (group relationship).
-    $item = $queue->claimItem();
-    $this->assertNotNull($item);
-    $this->assertNotFalse($item);
-    $this->assertIsObject($item);
-    $worker->processItem($item->data);
-
-    $node = Node::load(2);
-    $course = LearningOpportunitySpecification::load(2);
-    $vid_on_insert = $course->getRevisionId();
+    $node = Node::load(1);
+    $programme = LearningOpportunitySpecification::load(1);
+    $vid_on_insert = $programme->getRevisionId();
 
     // From source UUID to 'source_uuid'.
-    $source_uuid = $course->get(EntityManager::BASE_FIELD)
+    $source_uuid = $programme->get(EntityManager::BASE_FIELD)
       ->getValue()[0]['value'];
 
     $this->assertEquals($node->uuid(), $source_uuid, EntityManager::BASE_FIELD);
@@ -72,22 +58,22 @@ class CourseSyncHandlerOnInsertAfterDeleteTest extends CourseSyncHandlerTestBase
 
     $node->delete();
 
-    // Fifth item: course delete.
+    // Third item: programme delete.
     $item = $queue->claimItem();
     $this->assertNotNull($item);
     $this->assertNotFalse($item);
     $this->assertIsObject($item);
     $worker->processItem($item->data);
 
-    $node = Node::load(2);
-    $course = LearningOpportunitySpecification::load(2);
-    $vid_on_update = $course->getRevisionId();
+    $node = Node::load(1);
+    $programme = LearningOpportunitySpecification::load(1);
+    $vid_on_update = $programme->getRevisionId();
 
     $this->assertNull($node);
     $this->assertGreaterThan($vid_on_insert, $vid_on_update);
 
-    $status = $course->get(CourseSyncHandler::TARGET_OFF_SWITCH)->value;
-    $this->assertEquals(CourseSyncHandler::TARGET_OFF_STATE, $status);
+    $status = $programme->get(ProgrammeSyncHandler::TARGET_OFF_SWITCH)->value;
+    $this->assertEquals(ProgrammeSyncHandler::TARGET_OFF_STATE, $status);
 
     // Recreate the node.
     $node = Node::create($node_data);
@@ -100,33 +86,33 @@ class CourseSyncHandlerOnInsertAfterDeleteTest extends CourseSyncHandlerTestBase
       ->create($relationship_data);
     $relationship->save();
 
-    // Sixth item: course insert.
+    // Fourth item: programme insert.
     $item = $queue->claimItem();
     $this->assertNotNull($item);
     $this->assertNotFalse($item);
     $this->assertIsObject($item);
     $worker->processItem($item->data);
 
-    // Seventh item: course update (group relationship).
+    // Fifth item: programme update (group relationship).
     $item = $queue->claimItem();
     $this->assertNotNull($item);
     $this->assertNotFalse($item);
     $this->assertIsObject($item);
     $worker->processItem($item->data);
 
-    $new_course = LearningOpportunitySpecification::load(3);
-    $this->assertNull($new_course);
+    $new_programme = LearningOpportunitySpecification::load(3);
+    $this->assertNull($new_programme);
 
-    $node = Node::load(3);
-    $course = LearningOpportunitySpecification::load(2);
-    $source_uuid = $course->get(EntityManager::BASE_FIELD)
+    $node = Node::load(2);
+    $programme = LearningOpportunitySpecification::load(1);
+    $source_uuid = $programme->get(EntityManager::BASE_FIELD)
       ->getValue()[0]['value'];
 
     $this->assertNotNull($node);
     $this->assertEquals($node->uuid(), $source_uuid, EntityManager::BASE_FIELD);
 
-    $status = $course->get(CourseSyncHandler::TARGET_OFF_SWITCH)->value;
-    $this->assertNotEquals(CourseSyncHandler::TARGET_OFF_STATE, $status);
+    $status = $programme->get(ProgrammeSyncHandler::TARGET_OFF_SWITCH)->value;
+    $this->assertNotEquals(ProgrammeSyncHandler::TARGET_OFF_STATE, $status);
   }
 
   /**
@@ -157,7 +143,7 @@ class CourseSyncHandlerOnInsertAfterDeleteTest extends CourseSyncHandlerTestBase
   private function cleanRelationshipData(NodeInterface $node): array {
     $plugin_id = implode(':', [
       'group_node',
-      CourseSyncHandler::SOURCE_BUNDLE,
+      ProgrammeSyncHandler::SOURCE_BUNDLE,
     ]);
 
     $relationship_type = \Drupal::entityTypeManager()
