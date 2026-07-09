@@ -114,6 +114,7 @@ class CourseSyncHandler extends OccLosSyncHandlerBase implements SyncHandlerInte
     if (!empty($target)) {
       /** @var \Drupal\Core\Entity\ContentEntityInterface $target */
       $target->set(EntityManager::BASE_FIELD, $uuid);
+      $target->save();
       $this->entityBuilder->updateTargetFromSource($target, $source, $map);
     }
     else {

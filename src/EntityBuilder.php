@@ -93,7 +93,6 @@ class EntityBuilder {
     $target->set(EntityManager::BASE_FIELD, $source->uuid());
 
     $target->save();
-
   }
 
   /**
