@@ -31,7 +31,7 @@ class AcademicTerm implements DataTransformerInterface {
     $reference_field_chain = explode(self::GLUE, $strategy['source'][1]);
 
     $reference = $reference_field_chain[0];
-    $entity_type_id = $reference_field_chain[1];
+    // $entity_type_id = $reference_field_chain[1];
     $referenced_field_name = $reference_field_chain[2];
 
     $reference_field = $source->get($reference);

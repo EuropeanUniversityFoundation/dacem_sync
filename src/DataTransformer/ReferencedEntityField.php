@@ -30,7 +30,7 @@ class ReferencedEntityField implements DataTransformerInterface {
     $source_chain = explode(self::GLUE, $strategy['source']);
 
     $reference = $source_chain[0];
-    $entity_type_id = $source_chain[1];
+    // $entity_type_id = $source_chain[1];
     $field_name = $source_chain[2];
 
     $reference_field = $source->get($reference);
