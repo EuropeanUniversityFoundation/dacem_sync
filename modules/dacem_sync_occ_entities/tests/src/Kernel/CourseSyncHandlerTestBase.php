@@ -404,6 +404,63 @@ class CourseSyncHandlerTestBase extends ProgrammeSyncHandlerTestBase {
 
     // Create the field storage for Content.
     $field_storage = FieldStorageConfig::create([
+      'field_name' => 'field_iec_type',
+      'entity_type' => CourseSyncHandler::SOURCE_ENTITY_TYPE_ID,
+      'type' => 'list_string',
+      'settings' => [
+        'allowed_values' => [
+          'core' => 'Core',
+          'mandatory' => 'Mandatory',
+          'optional' => 'Optional',
+          'elective' => 'Elective',
+          'external_practices' => 'Other',
+        ],
+        'allowed_values_function' => '',
+      ],
+      'cardinality' => 1,
+    ]);
+    $field_storage->save();
+
+    // Create the field config for the relevant Content type.
+    $field_instance = FieldConfig::create([
+      'field_storage' => $field_storage,
+      'bundle' => CourseSyncHandler::SOURCE_BUNDLE,
+      'label' => 'Type',
+      'required' => FALSE,
+    ]);
+    $field_instance->save();
+
+    // Create the field storage for Content.
+    $field_storage = FieldStorageConfig::create([
+      'field_name' => 'field_iec_year',
+      'entity_type' => CourseSyncHandler::SOURCE_ENTITY_TYPE_ID,
+      'type' => 'list_integer',
+      'settings' => [
+        'allowed_values' => [
+          1 => '1',
+          2 => '2',
+          3 => '3',
+          4 => '4',
+          5 => '5',
+          0 => 'Any',
+        ],
+        'allowed_values_function' => '',
+      ],
+      'cardinality' => 1,
+    ]);
+    $field_storage->save();
+
+    // Create the field config for the relevant Content type.
+    $field_instance = FieldConfig::create([
+      'field_storage' => $field_storage,
+      'bundle' => CourseSyncHandler::SOURCE_BUNDLE,
+      'label' => 'Year',
+      'required' => FALSE,
+    ]);
+    $field_instance->save();
+
+    // Create the field storage for Content.
+    $field_storage = FieldStorageConfig::create([
       'field_name' => 'field_iec_coordinator',
       'entity_type' => CourseSyncHandler::SOURCE_ENTITY_TYPE_ID,
       'type' => 'string',
@@ -462,6 +519,8 @@ class CourseSyncHandlerTestBase extends ProgrammeSyncHandlerTestBase {
       'field_iec_requirements' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       'field_iec_planned_activities' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       'field_iec_evaluation' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      'field_iec_type' => 'elective',
+      'field_iec_year' => 2,
       'field_iec_coordinator' => 'Anonymous',
       'status' => 1,
     ]);

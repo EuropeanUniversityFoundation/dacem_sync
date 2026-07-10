@@ -34,6 +34,9 @@ class DataTransformerResolverTest extends KernelTestBase {
 
     $negate = $collector->get('negate');
     $this->assertInstanceOf(DataTransformerInterface::class, $negate);
+
+    $related_programme = $collector->get('related_programme');
+    $this->assertInstanceOf(DataTransformerInterface::class, $related_programme);
   }
 
 }

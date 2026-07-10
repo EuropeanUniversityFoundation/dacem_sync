@@ -15,6 +15,11 @@ services:
     arguments: []
     tags:
       - { name: 'data_transformer'}
+  dacem_sync_occ_entities.data_transformer.related_programme:
+    class: Drupal\dacem_sync_occ_entities\DataTransformer\RelatedProgramme
+    arguments: []
+    tags:
+      - { name: 'data_transformer'}
 
   dacem_sync_occ_entities.course_sync_handler:
     class: Drupal\dacem_sync_occ_entities\SyncHandler\CourseSyncHandler

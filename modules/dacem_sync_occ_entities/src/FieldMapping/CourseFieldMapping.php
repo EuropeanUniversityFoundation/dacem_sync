@@ -189,6 +189,16 @@ class CourseFieldMapping implements FieldMappingInterface {
             'required' => TRUE,
             'transformer' => 'group_hei',
           ],
+          'course__related_programme' => [
+            'source' => [
+              'field_iec_programme',
+              'field_iec_type',
+              'field_iec_year',
+              'field_iec_programme.occ_los.field_length_of_programme',
+              'field_iec_programme.occ_los.field_number_of_terms',
+            ],
+            'transformer' => 'related_programme',
+          ],
         ],
       ],
     ];
