@@ -97,7 +97,7 @@ class ProgrammeSyncHandlerOnUpdateTest extends ProgrammeSyncHandlerTestBase {
     $values_on_insert = $programme->toArray();
 
     $node = Node::load(1);
-    $node->set('field_programme_qualification', ['value' => 'BSc.']);
+    $node->set('field_programme_mobility', ['value' => 'Yes, please.']);
 
     $item = $queue->claimItem();
 

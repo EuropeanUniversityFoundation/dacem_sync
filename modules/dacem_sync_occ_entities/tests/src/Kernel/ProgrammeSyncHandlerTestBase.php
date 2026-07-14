@@ -23,7 +23,7 @@ class ProgrammeSyncHandlerTestBase extends OccLosSyncHandlerTestBase {
   protected function setUp(): void {
     parent::setUp();
 
-    // Create the field storage for Content.
+    // Code.
     $field_storage = FieldStorageConfig::create([
       'field_name' => 'field_programme_code',
       'entity_type' => ProgrammeSyncHandler::SOURCE_ENTITY_TYPE_ID,
@@ -32,52 +32,15 @@ class ProgrammeSyncHandlerTestBase extends OccLosSyncHandlerTestBase {
     ]);
     $field_storage->save();
 
-    // Create the field config for the relevant Content type.
     $field_instance = FieldConfig::create([
       'field_storage' => $field_storage,
       'bundle' => ProgrammeSyncHandler::SOURCE_BUNDLE,
-      'label' => 'Programme code',
+      'label' => 'Code',
       'required' => TRUE,
     ]);
     $field_instance->save();
 
-    // Create the field storage for Content.
-    $field_storage = FieldStorageConfig::create([
-      'field_name' => 'field_credits',
-      'entity_type' => ProgrammeSyncHandler::SOURCE_ENTITY_TYPE_ID,
-      'type' => 'integer',
-      'cardinality' => 1,
-    ]);
-    $field_storage->save();
-
-    // Create the field config for the relevant Content type.
-    $field_instance = FieldConfig::create([
-      'field_storage' => $field_storage,
-      'bundle' => ProgrammeSyncHandler::SOURCE_BUNDLE,
-      'label' => 'Number of credits',
-      'required' => TRUE,
-    ]);
-    $field_instance->save();
-
-    // Create the field storage for Content.
-    $field_storage = FieldStorageConfig::create([
-      'field_name' => 'field_eqf_level',
-      'entity_type' => ProgrammeSyncHandler::SOURCE_ENTITY_TYPE_ID,
-      'type' => 'integer',
-      'cardinality' => 1,
-    ]);
-    $field_storage->save();
-
-    // Create the field config for the relevant Content type.
-    $field_instance = FieldConfig::create([
-      'field_storage' => $field_storage,
-      'bundle' => ProgrammeSyncHandler::SOURCE_BUNDLE,
-      'label' => 'EQF level provided',
-      'required' => TRUE,
-    ]);
-    $field_instance->save();
-
-    // Create the field storage for Content.
+    // Abbreviation.
     $field_storage = FieldStorageConfig::create([
       'field_name' => 'field_programme_abbreviation',
       'entity_type' => ProgrammeSyncHandler::SOURCE_ENTITY_TYPE_ID,
@@ -86,34 +49,32 @@ class ProgrammeSyncHandlerTestBase extends OccLosSyncHandlerTestBase {
     ]);
     $field_storage->save();
 
-    // Create the field config for the relevant Content type.
     $field_instance = FieldConfig::create([
       'field_storage' => $field_storage,
       'bundle' => ProgrammeSyncHandler::SOURCE_BUNDLE,
-      'label' => 'Programme abbreviation',
+      'label' => 'Abbreviation',
       'required' => FALSE,
     ]);
     $field_instance->save();
 
-    // Create the field storage for Content.
+    // Fields of study.
     $field_storage = FieldStorageConfig::create([
-      'field_name' => 'field_programme_description',
+      'field_name' => 'field_isced_f',
       'entity_type' => ProgrammeSyncHandler::SOURCE_ENTITY_TYPE_ID,
-      'type' => 'text_long',
-      'cardinality' => 1,
+      'type' => 'isced_f',
+      'cardinality' => -1,
     ]);
     $field_storage->save();
 
-    // Create the field config for the relevant Content type.
     $field_instance = FieldConfig::create([
       'field_storage' => $field_storage,
       'bundle' => ProgrammeSyncHandler::SOURCE_BUNDLE,
-      'label' => 'Programme description',
+      'label' => 'Fields of study',
       'required' => TRUE,
     ]);
     $field_instance->save();
 
-    // Create the field storage for Content.
+    // Learning opportunity type.
     $field_storage = FieldStorageConfig::create([
       'field_name' => 'field_learning_opportunity_type',
       'entity_type' => ProgrammeSyncHandler::SOURCE_ENTITY_TYPE_ID,
@@ -125,38 +86,33 @@ class ProgrammeSyncHandlerTestBase extends OccLosSyncHandlerTestBase {
     ]);
     $field_storage->save();
 
-    // Create the field config for the relevant Content type.
     $field_instance = FieldConfig::create([
       'field_storage' => $field_storage,
       'bundle' => ProgrammeSyncHandler::SOURCE_BUNDLE,
-      'label' => 'Programme ELM:LOT',
+      'label' => 'Learning opportunity type',
       'required' => FALSE,
     ]);
 
     $field_instance->save();
 
-    // Create the field storage for Content.
+    // Level of qualification.
     $field_storage = FieldStorageConfig::create([
-      'field_name' => 'field_programme_mode_of_study',
+      'field_name' => 'field_eqf_level',
       'entity_type' => ProgrammeSyncHandler::SOURCE_ENTITY_TYPE_ID,
-      'type' => 'elm_controlled_vocabulary',
+      'type' => 'integer',
       'cardinality' => 1,
-      'settings' => [
-        'vocabulary' => 'learning_schedule',
-      ],
     ]);
     $field_storage->save();
 
-    // Create the field config for the relevant Content type.
     $field_instance = FieldConfig::create([
       'field_storage' => $field_storage,
       'bundle' => ProgrammeSyncHandler::SOURCE_BUNDLE,
-      'label' => 'Programme ELM:LST',
-      'required' => FALSE,
+      'label' => 'Level of qualification',
+      'required' => TRUE,
     ]);
     $field_instance->save();
 
-    // Create the field storage for Content.
+    // Mode of learning.
     $field_storage = FieldStorageConfig::create([
       'field_name' => 'field_programme_mode_of_learning',
       'entity_type' => ProgrammeSyncHandler::SOURCE_ENTITY_TYPE_ID,
@@ -168,35 +124,87 @@ class ProgrammeSyncHandlerTestBase extends OccLosSyncHandlerTestBase {
     ]);
     $field_storage->save();
 
-    // Create the field config for the relevant Content type.
     $field_instance = FieldConfig::create([
       'field_storage' => $field_storage,
       'bundle' => ProgrammeSyncHandler::SOURCE_BUNDLE,
-      'label' => 'Programme ELM:MLA',
+      'label' => 'Mode of learning',
       'required' => FALSE,
     ]);
 
     $field_instance->save();
 
-    // Create the field storage for Content.
+    // Length of programme.
     $field_storage = FieldStorageConfig::create([
-      'field_name' => 'field_isced_f',
+      'field_name' => 'field_length_of_programme',
       'entity_type' => ProgrammeSyncHandler::SOURCE_ENTITY_TYPE_ID,
-      'type' => 'isced_f',
-      'cardinality' => -1,
+      'type' => 'integer',
+      'cardinality' => 1,
     ]);
     $field_storage->save();
 
-    // Create the field config for the relevant Content type.
     $field_instance = FieldConfig::create([
       'field_storage' => $field_storage,
       'bundle' => ProgrammeSyncHandler::SOURCE_BUNDLE,
-      'label' => 'ISCED-F field of study',
+      'label' => 'Length of programme',
       'required' => TRUE,
     ]);
     $field_instance->save();
 
-    // Create the field storage for Content.
+    // Number of terms per year.
+    $field_storage = FieldStorageConfig::create([
+      'field_name' => 'field_number_of_terms',
+      'entity_type' => ProgrammeSyncHandler::SOURCE_ENTITY_TYPE_ID,
+      'type' => 'integer',
+      'cardinality' => 1,
+    ]);
+    $field_storage->save();
+
+    $field_instance = FieldConfig::create([
+      'field_storage' => $field_storage,
+      'bundle' => ProgrammeSyncHandler::SOURCE_BUNDLE,
+      'label' => 'Number of terms per year',
+      'required' => TRUE,
+    ]);
+    $field_instance->save();
+
+    // Number of credits.
+    $field_storage = FieldStorageConfig::create([
+      'field_name' => 'field_credits',
+      'entity_type' => ProgrammeSyncHandler::SOURCE_ENTITY_TYPE_ID,
+      'type' => 'integer',
+      'cardinality' => 1,
+    ]);
+    $field_storage->save();
+
+    $field_instance = FieldConfig::create([
+      'field_storage' => $field_storage,
+      'bundle' => ProgrammeSyncHandler::SOURCE_BUNDLE,
+      'label' => 'Number of credits',
+      'required' => TRUE,
+    ]);
+    $field_instance->save();
+
+    // Mode of study.
+    $field_storage = FieldStorageConfig::create([
+      'field_name' => 'field_programme_mode_of_study',
+      'entity_type' => ProgrammeSyncHandler::SOURCE_ENTITY_TYPE_ID,
+      'type' => 'elm_controlled_vocabulary',
+      'cardinality' => 1,
+      'settings' => [
+        'vocabulary' => 'learning_schedule',
+      ],
+    ]);
+    $field_storage->save();
+
+    $field_instance = FieldConfig::create([
+      'field_storage' => $field_storage,
+      'bundle' => ProgrammeSyncHandler::SOURCE_BUNDLE,
+      'label' => 'Mode of study',
+      'required' => FALSE,
+    ]);
+    $field_instance->save();
+
+    // Languages of instruction.
     $field_storage = FieldStorageConfig::create([
       'field_name' => 'field_programme_language_of_inst',
       'entity_type' => ProgrammeSyncHandler::SOURCE_ENTITY_TYPE_ID,
@@ -208,88 +216,15 @@ class ProgrammeSyncHandlerTestBase extends OccLosSyncHandlerTestBase {
     ]);
     $field_storage->save();
 
-    // Create the field config for the relevant Content type.
     $field_instance = FieldConfig::create([
       'field_storage' => $field_storage,
       'bundle' => ProgrammeSyncHandler::SOURCE_BUNDLE,
-      'label' => 'Language of instruction',
+      'label' => 'Languages of instruction',
       'required' => TRUE,
     ]);
     $field_instance->save();
 
-    // Create the field storage for Content.
-    $field_storage = FieldStorageConfig::create([
-      'field_name' => 'field_programme_learn_outcomes',
-      'entity_type' => ProgrammeSyncHandler::SOURCE_ENTITY_TYPE_ID,
-      'type' => 'text_long',
-      'cardinality' => 1,
-    ]);
-    $field_storage->save();
-
-    // Create the field config for the relevant Content type.
-    $field_instance = FieldConfig::create([
-      'field_storage' => $field_storage,
-      'bundle' => ProgrammeSyncHandler::SOURCE_BUNDLE,
-      'label' => 'Learning outcomes',
-      'required' => TRUE,
-    ]);
-    $field_instance->save();
-
-    // Create the field storage for Content.
-    $field_storage = FieldStorageConfig::create([
-      'field_name' => 'field_length_of_programme',
-      'entity_type' => ProgrammeSyncHandler::SOURCE_ENTITY_TYPE_ID,
-      'type' => 'integer',
-      'cardinality' => 1,
-    ]);
-    $field_storage->save();
-
-    // Create the field config for the relevant Content type.
-    $field_instance = FieldConfig::create([
-      'field_storage' => $field_storage,
-      'bundle' => ProgrammeSyncHandler::SOURCE_BUNDLE,
-      'label' => 'Length of programme in number of terms',
-      'required' => TRUE,
-    ]);
-    $field_instance->save();
-
-    // Create the field storage for Content.
-    $field_storage = FieldStorageConfig::create([
-      'field_name' => 'field_number_of_terms',
-      'entity_type' => ProgrammeSyncHandler::SOURCE_ENTITY_TYPE_ID,
-      'type' => 'integer',
-      'cardinality' => 1,
-    ]);
-    $field_storage->save();
-
-    // Create the field config for the relevant Content type.
-    $field_instance = FieldConfig::create([
-      'field_storage' => $field_storage,
-      'bundle' => ProgrammeSyncHandler::SOURCE_BUNDLE,
-      'label' => 'Number of terms in a full academic year',
-      'required' => TRUE,
-    ]);
-    $field_instance->save();
-
-    // Create the field storage for Content.
-    $field_storage = FieldStorageConfig::create([
-      'field_name' => 'field_programme_web',
-      'entity_type' => ProgrammeSyncHandler::SOURCE_ENTITY_TYPE_ID,
-      'type' => 'link',
-      'cardinality' => -1,
-    ]);
-    $field_storage->save();
-
-    // Create the field config for the relevant Content type.
-    $field_instance = FieldConfig::create([
-      'field_storage' => $field_storage,
-      'bundle' => ProgrammeSyncHandler::SOURCE_BUNDLE,
-      'label' => 'Programme website',
-      'required' => FALSE,
-    ]);
-    $field_instance->save();
-
-    // Create the field storage for Content.
+    // Start date.
     $field_storage = FieldStorageConfig::create([
       'field_name' => 'field_programme_start_date',
       'entity_type' => ProgrammeSyncHandler::SOURCE_ENTITY_TYPE_ID,
@@ -298,7 +233,6 @@ class ProgrammeSyncHandlerTestBase extends OccLosSyncHandlerTestBase {
     ]);
     $field_storage->save();
 
-    // Create the field config for the relevant Content type.
     $field_instance = FieldConfig::create([
       'field_storage' => $field_storage,
       'bundle' => ProgrammeSyncHandler::SOURCE_BUNDLE,
@@ -307,7 +241,7 @@ class ProgrammeSyncHandlerTestBase extends OccLosSyncHandlerTestBase {
     ]);
     $field_instance->save();
 
-    // Create the field storage for Content.
+    // End date.
     $field_storage = FieldStorageConfig::create([
       'field_name' => 'field_programme_end_date',
       'entity_type' => ProgrammeSyncHandler::SOURCE_ENTITY_TYPE_ID,
@@ -316,7 +250,6 @@ class ProgrammeSyncHandlerTestBase extends OccLosSyncHandlerTestBase {
     ]);
     $field_storage->save();
 
-    // Create the field config for the relevant Content type.
     $field_instance = FieldConfig::create([
       'field_storage' => $field_storage,
       'bundle' => ProgrammeSyncHandler::SOURCE_BUNDLE,
@@ -325,20 +258,70 @@ class ProgrammeSyncHandlerTestBase extends OccLosSyncHandlerTestBase {
     ]);
     $field_instance->save();
 
-    // Create the field storage for Content.
+    // Webpage.
     $field_storage = FieldStorageConfig::create([
-      'field_name' => 'field_programme_qualification',
+      'field_name' => 'field_programme_web',
+      'entity_type' => ProgrammeSyncHandler::SOURCE_ENTITY_TYPE_ID,
+      'type' => 'link',
+      'cardinality' => -1,
+    ]);
+    $field_storage->save();
+
+    $field_instance = FieldConfig::create([
+      'field_storage' => $field_storage,
+      'bundle' => ProgrammeSyncHandler::SOURCE_BUNDLE,
+      'label' => 'Webpage',
+      'required' => FALSE,
+    ]);
+    $field_instance->save();
+
+    // Description.
+    $field_storage = FieldStorageConfig::create([
+      'field_name' => 'field_programme_description',
       'entity_type' => ProgrammeSyncHandler::SOURCE_ENTITY_TYPE_ID,
       'type' => 'text_long',
       'cardinality' => 1,
     ]);
     $field_storage->save();
 
-    // Create the field config for the relevant Content type.
     $field_instance = FieldConfig::create([
       'field_storage' => $field_storage,
       'bundle' => ProgrammeSyncHandler::SOURCE_BUNDLE,
-      'label' => 'Qualification',
+      'label' => 'Description',
+      'required' => TRUE,
+    ]);
+    $field_instance->save();
+
+    // Learning outcomes.
+    $field_storage = FieldStorageConfig::create([
+      'field_name' => 'field_programme_learn_outcomes',
+      'entity_type' => ProgrammeSyncHandler::SOURCE_ENTITY_TYPE_ID,
+      'type' => 'text_long',
+      'cardinality' => 1,
+    ]);
+    $field_storage->save();
+
+    $field_instance = FieldConfig::create([
+      'field_storage' => $field_storage,
+      'bundle' => ProgrammeSyncHandler::SOURCE_BUNDLE,
+      'label' => 'Learning outcomes',
+      'required' => TRUE,
+    ]);
+    $field_instance->save();
+
+    // Mobility (not mapped).
+    $field_storage = FieldStorageConfig::create([
+      'field_name' => 'field_programme_mobility',
+      'entity_type' => ProgrammeSyncHandler::SOURCE_ENTITY_TYPE_ID,
+      'type' => 'text_long',
+      'cardinality' => 1,
+    ]);
+    $field_storage->save();
+
+    $field_instance = FieldConfig::create([
+      'field_storage' => $field_storage,
+      'bundle' => ProgrammeSyncHandler::SOURCE_BUNDLE,
+      'label' => 'Mobility',
       'required' => FALSE,
     ]);
     $field_instance->save();
@@ -371,37 +354,37 @@ class ProgrammeSyncHandlerTestBase extends OccLosSyncHandlerTestBase {
       'type' => ProgrammeSyncHandler::SOURCE_BUNDLE,
       'title' => 'Example Degree Programme',
       'field_programme_code' => 'PROG-1',
-      'field_credits' => 180,
-      'field_eqf_level' => 6,
       'field_programme_abbreviation' => 'Example Programme',
-      'field_programme_description' => 'Description of this Programme.',
-    // Educational programme.
-      'field_learning_opportunity_type' => '79343569f3',
-    // Full time.
-      'field_programme_mode_of_study' => '72a0ab92fa',
-      'field_programme_mode_of_learning' => [
-    // Presential.
-        '9191af2ed9',
-    // Online.
-        '920fbb3cbe',
-      ],
       // Basic programmes and qualifications.
       'field_isced_f' => '0011',
-      'field_programme_language_of_inst' => [
-      // English.
-        1,
-      // Portuguese (Portugal).
-        2,
+      // Educational programme.
+      'field_learning_opportunity_type' => '79343569f3',
+      'field_eqf_level' => 6,
+      'field_programme_mode_of_learning' => [
+        // Presential.
+        '9191af2ed9',
+        // Online.
+        '920fbb3cbe',
       ],
-      'field_programme_learn_outcomes' => 'Learning outcomes of this Programme.',
       'field_length_of_programme' => 6,
       'field_number_of_terms' => 2,
+      'field_credits' => 180,
+      // Full time.
+      'field_programme_mode_of_study' => '72a0ab92fa',
+      'field_programme_language_of_inst' => [
+        // English.
+        1,
+        // Portuguese (Portugal).
+        2,
+      ],
+      'field_programme_start_date' => '2020-01-01',
+      'field_programme_end_date' => '2030-12-31',
       'field_programme_web' => [
         'uri' => 'https://example.com/programme/1',
         'title' => 'example.com/programme/1',
       ],
-      'field_programme_start_date' => '2020-01-01',
-      'field_programme_end_date' => '2030-12-31',
+      'field_programme_description' => 'Description of this Programme.',
+      'field_programme_learn_outcomes' => 'Learning outcomes of this Programme.',
       'status' => 1,
     ]);
     $programme->save();
