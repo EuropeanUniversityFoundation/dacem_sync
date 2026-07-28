@@ -1,0 +1,45 @@
+{
+    "name": "dacem/dacem_sync",
+    "type": "drupal-module",
+    "description": "Provides sync functionality between DACEM content types and OCC entities",
+    "keywords": [
+        "Drupal",
+        "Erasmus Without Paper",
+        "Open Course Catalogue",
+        "OCCAPI",
+        "DACEM"
+    ],
+    "homepage": "https://github.com/EuropeanUniversityFoundation/dacem_sync",
+    "support": {
+        "issues": "https://github.com/EuropeanUniversityFoundation/dacem_sync/issues",
+        "source": "https://github.com/EuropeanUniversityFoundation/dacem_sync"
+    },
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Tiago Simões",
+            "email": "tiago.simoes@uni-foundation.eu",
+            "role": "Maintainer"
+        }
+    ],
+    "require": {
+        "drupal/entity_reference_validators": "^2.0",
+        "drupal/group": "^3.0",
+        "euf/ewp_core": "^1.0",
+        "euf/ewp_institutions": "^1.0",
+        "euf/ewp_ounits": "^1.0",
+        "euf/occ_entities": "^1.0"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://packages.drupal.org/8"
+        },
+        {
+            "type": "composer",
+            "url": "https://packages.uni-foundation.eu"
+        }
+    ]
+}

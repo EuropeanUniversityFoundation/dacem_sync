@@ -6,7 +6,6 @@ namespace Drupal\Tests\dacem_sync_occ_entities\Unit\DataTransformer;
 
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Field\EntityReferenceFieldItemListInterface;
-use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\dacem_sync\EntityManager;
 use Drupal\dacem_sync_occ_entities\DataTransformer\Ounit;
 use Drupal\Tests\UnitTestCase;

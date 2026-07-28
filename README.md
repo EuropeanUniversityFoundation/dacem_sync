@@ -16,7 +16,7 @@ Include the repository in your project's `composer.json` file:
 
 Then you can require the package as usual:
 
-    composer require euf/dacem_sync
+    composer require dacem/dacem_sync
 
 Finally, install the module:
 
