@@ -15,9 +15,14 @@ services:
     arguments: []
     tags:
       - { name: 'data_transformer'}
+  dacem_sync_occ_entities.data_transformer.ounit:
+    class: Drupal\dacem_sync_occ_entities\DataTransformer\Ounit
+    arguments: ['@dacem_sync.entity_manager']
+    tags:
+      - { name: 'data_transformer'}
   dacem_sync_occ_entities.data_transformer.related_programme:
     class: Drupal\dacem_sync_occ_entities\DataTransformer\RelatedProgramme
-    arguments: []
+    arguments: ['@dacem_sync.entity_manager']
     tags:
       - { name: 'data_transformer'}
 

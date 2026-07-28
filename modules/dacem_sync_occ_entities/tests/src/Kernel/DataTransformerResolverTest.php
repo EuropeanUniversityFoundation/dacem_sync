@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\dacem_sync_occ_entities\Kernel\DataTransformer;
+namespace Drupal\Tests\dacem_sync_occ_entities\Kernel;
 
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\dacem_sync\DataTransformerInterface;
@@ -34,6 +34,9 @@ class DataTransformerResolverTest extends KernelTestBase {
 
     $negate = $collector->get('negate');
     $this->assertInstanceOf(DataTransformerInterface::class, $negate);
+
+    $ounit = $collector->get('ounit');
+    $this->assertInstanceOf(DataTransformerInterface::class, $ounit);
 
     $related_programme = $collector->get('related_programme');
     $this->assertInstanceOf(DataTransformerInterface::class, $related_programme);

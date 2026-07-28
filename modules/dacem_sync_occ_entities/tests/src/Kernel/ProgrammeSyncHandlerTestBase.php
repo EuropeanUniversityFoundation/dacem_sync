@@ -23,6 +23,26 @@ class ProgrammeSyncHandlerTestBase extends OccLosSyncHandlerTestBase {
   protected function setUp(): void {
     parent::setUp();
 
+    // Organizational Unit.
+    $field_storage = FieldStorageConfig::create([
+      'field_name' => 'field_programme_ou',
+      'entity_type' => ProgrammeSyncHandler::SOURCE_ENTITY_TYPE_ID,
+      'type' => 'entity_reference',
+      'settings' => [
+        'target_type' => 'node',
+      ],
+      'cardinality' => 1,
+    ]);
+    $field_storage->save();
+
+    $field_instance = FieldConfig::create([
+      'field_storage' => $field_storage,
+      'bundle' => ProgrammeSyncHandler::SOURCE_BUNDLE,
+      'label' => 'Organizational Unit',
+      'required' => FALSE,
+    ]);
+    $field_instance->save();
+
     // Code.
     $field_storage = FieldStorageConfig::create([
       'field_name' => 'field_programme_code',

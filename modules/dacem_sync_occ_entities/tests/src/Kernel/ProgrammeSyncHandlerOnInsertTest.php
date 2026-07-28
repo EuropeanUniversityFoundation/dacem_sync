@@ -151,6 +151,9 @@ class ProgrammeSyncHandlerOnInsertTest extends ProgrammeSyncHandlerTestBase {
       ->getValue()[0]['value'];
 
     $this->assertEquals($node->uuid(), $source_uuid, EntityManager::BASE_FIELD);
+
+    // Without 'dacem_sync_ewp_ounits' enabled, no 'ounit' will be synced.
+    $this->assertEmpty($values['ounit']);
   }
 
 }

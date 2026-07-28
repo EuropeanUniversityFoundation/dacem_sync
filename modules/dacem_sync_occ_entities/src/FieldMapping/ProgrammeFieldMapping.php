@@ -158,6 +158,13 @@ class ProgrammeFieldMapping implements FieldMappingInterface {
             'required' => TRUE,
             'transformer' => 'group_hei',
           ],
+          'ounit' => [
+            'properties' => [
+              'target_id' => 'target_id',
+            ],
+            'source' => 'field_programme_ou',
+            'transformer' => 'ounit',
+          ],
         ],
       ],
     ];
