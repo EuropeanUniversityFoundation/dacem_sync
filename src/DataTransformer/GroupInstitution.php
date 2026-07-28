@@ -24,7 +24,7 @@ class GroupInstitution implements DataTransformerInterface {
    * Constructs data transformer.
    *
    * @param \Drupal\dacem_sync\EntityManager $entity_manager
-   *   The entity type manager.
+   *   The entity manager.
    */
   public function __construct(
     EntityManager $entity_manager,

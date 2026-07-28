@@ -6,6 +6,7 @@ namespace Drupal\dacem_sync_occ_entities\DataTransformer;
 
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\dacem_sync\DataTransformerInterface;
+use Drupal\dacem_sync\EntityManager;
 
 /**
  * Defines a RelatedProgramme data transformer.
@@ -16,6 +17,25 @@ class RelatedProgramme implements DataTransformerInterface {
   public const SEPARATOR = '/';
 
   public const MANDATORY_VALUES = ['core', 'mandatory'];
+
+  /**
+   * The entity manager.
+   *
+   * @var \Drupal\dacem_sync\EntityManager
+   */
+  protected $entityManager;
+
+  /**
+   * Constructs data transformer.
+   *
+   * @param \Drupal\dacem_sync\EntityManager $entity_manager
+   *   The entity manager.
+   */
+  public function __construct(
+    EntityManager $entity_manager,
+  ) {
+    $this->entityManager = $entity_manager;
+  }
 
   /**
    * {@inheritdoc}
@@ -51,6 +71,9 @@ class RelatedProgramme implements DataTransformerInterface {
 
     foreach ($referenced_entities as $entity) {
       /** @var \Drupal\Core\Entity\ContentEntityInterface $entity */
+      $source_uuid = $entity->uuid();
+      $los = $this->entityManager->loadBySourceUuid('occ_los', $source_uuid);
+
       $term_count_values = $entity->get($term_count_field)->getValue();
       $term_count = $term_count_values[0]['value'];
 
@@ -60,7 +83,7 @@ class RelatedProgramme implements DataTransformerInterface {
       $year_count = (int) ceil($term_count / $terms_per_year);
 
       $output[] = [
-        'target_id' => (string) $entity->id(),
+        'target_id' => (string) $los->id(),
         'mandatory' => (string) (int) (in_array($type, self::MANDATORY_VALUES)),
         'year' => implode(self::SEPARATOR, [$year, $year_count]),
       ];

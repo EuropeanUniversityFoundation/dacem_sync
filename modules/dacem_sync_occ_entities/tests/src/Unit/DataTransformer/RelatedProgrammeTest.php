@@ -7,6 +7,7 @@ namespace Drupal\Tests\dacem_sync\Unit\DataTransformer;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Field\EntityReferenceFieldItemListInterface;
 use Drupal\Core\Field\FieldItemListInterface;
+use Drupal\dacem_sync\EntityManager;
 use Drupal\dacem_sync_occ_entities\DataTransformer\RelatedProgramme;
 use Drupal\Tests\UnitTestCase;
 
@@ -17,10 +18,14 @@ use Drupal\Tests\UnitTestCase;
  */
 class RelatedProgrammeTest extends UnitTestCase {
 
+public const UUID = '01234567-89ab-cdef-0123-456789abcdef';
+
   /**
    * Tests that the data transformer can concatenate field values.
    */
   public function testTransformerConcatenates(): void {
+    $programme_los = $this->createMock(ContentEntityInterface::class);
+    $programme_los->method('id')->willReturn(101);
 
     $programme = $this->createMock(ContentEntityInterface::class);
 
@@ -39,6 +44,7 @@ class RelatedProgrammeTest extends UnitTestCase {
     ]);
 
     $programme->method('id')->willReturn(1);
+    $programme->method('uuid')->willReturn(self::UUID);
     $programme->method('get')->willReturnMap([
       ['field_length_of_programme', $term_count],
       ['field_number_of_terms', $terms_per_year],
@@ -79,7 +85,12 @@ class RelatedProgrammeTest extends UnitTestCase {
       'transformer' => 'related_programme',
     ];
 
-    $transformer = new RelatedProgramme();
+    $entity_manager = $this->createMock(EntityManager::class);
+    $entity_manager->method('loadBySourceUuid')
+      ->with('occ_los', self::UUID)
+      ->willReturn($programme_los);
+
+    $transformer = new RelatedProgramme($entity_manager);
 
     $result = $transformer->transform(
       $entity,
@@ -89,7 +100,7 @@ class RelatedProgrammeTest extends UnitTestCase {
     $this->assertSame(
       [
         [
-          'target_id' => '1',
+          'target_id' => '101',
           'mandatory' => '1',
           'year' => '2/3',
         ],
