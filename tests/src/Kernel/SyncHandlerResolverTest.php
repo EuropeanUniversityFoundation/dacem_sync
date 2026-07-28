@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\dacem_sync\Kernel\SyncHandler;
+namespace Drupal\Tests\dacem_sync\Kernel;
 
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\dacem_sync\SyncHandlerInterface;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\dacem_sync\Unit\DataTransformer;
+namespace Drupal\Tests\dacem_sync_occ_entities\Unit\DataTransformer;
 
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Field\FieldItemListInterface;

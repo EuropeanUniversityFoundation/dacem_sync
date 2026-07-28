@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\Tests\dacem_sync\Unit\DataTransformer;
+namespace Drupal\Tests\dacem_sync_occ_entities\Unit\DataTransformer;
 
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Field\EntityReferenceFieldItemListInterface;
@@ -18,7 +18,7 @@ use Drupal\Tests\UnitTestCase;
  */
 class RelatedProgrammeTest extends UnitTestCase {
 
-public const UUID = '01234567-89ab-cdef-0123-456789abcdef';
+  public const UUID = '01234567-89ab-cdef-0123-456789abcdef';
 
   /**
    * Tests that the data transformer can concatenate field values.
