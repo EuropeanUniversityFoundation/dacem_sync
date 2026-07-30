@@ -27,6 +27,16 @@ class SyncHandlerResolver {
   }
 
   /**
+   * Returns all sync handlers.
+   *
+   * @return \Drupal\dacem_sync\SyncHandlerInterface[]
+   *   The sync handlers.
+   */
+  public function getHandlers(): array {
+    return $this->syncHandlers;
+  }
+
+  /**
    * Returns a sync handler based on its ID.
    *
    * @param string $id

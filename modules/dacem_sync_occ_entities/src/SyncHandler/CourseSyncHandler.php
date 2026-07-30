@@ -18,6 +18,7 @@ use Drupal\dacem_sync\SyncHandlerInterface;
 class CourseSyncHandler extends OccLosSyncHandlerBase implements SyncHandlerInterface {
 
   public const SYNC_HANDLER_ID = 'course_sync_handler';
+  public const SYNC_PRIORITY = 3;
 
   public const SOURCE_ENTITY_TYPE_ID = 'node';
   public const SOURCE_BUNDLE = 'individual_educational_component';
@@ -87,6 +88,34 @@ class CourseSyncHandler extends OccLosSyncHandlerBase implements SyncHandlerInte
    */
   public function id(): string {
     return self::SYNC_HANDLER_ID;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getSyncPriority(): int {
+    return self::SYNC_PRIORITY;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getSourceEntityTypeId(): string {
+    return self::SOURCE_ENTITY_TYPE_ID;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getSourceBundle(): string {
+    return self::SOURCE_BUNDLE;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getTargetEntityTypeId(): string {
+    return self::TARGET_ENTITY_TYPE_ID;
   }
 
   /**
