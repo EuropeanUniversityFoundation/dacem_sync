@@ -47,3 +47,6 @@ services:
     class: Drupal\dacem_sync\SyncHandlerResolver
     tags:
         - { name: service_collector, tag: 'sync_handler', call: 'addHandler' }
+  dacem_sync.sync_legacy_command:
+    class: Drupal\dacem_sync\Drush\Commands\DacemSyncCommands
+    arguments: ['@database', '@entity_type.manager', '@queue','@dacem_sync.sync_handler_resolver']
