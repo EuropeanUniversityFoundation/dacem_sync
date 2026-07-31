@@ -174,14 +174,14 @@ final class DacemSyncCommands extends DrushCommands implements ContainerInjectio
     if ($source_data_table) {
       $query->innerJoin(
         $source_data_table,
-        'data',
-        "data.$source_id_key = base.$source_id_key"
+        'source_data',
+        "source_data.$source_id_key = source.$source_id_key"
       );
 
-      $source_bundle_alias = 'data';
+      $source_bundle_alias = 'source_data';
     }
     else {
-      $source_bundle_alias = 'base';
+      $source_bundle_alias = 'source';
     }
 
     $query->leftJoin(
