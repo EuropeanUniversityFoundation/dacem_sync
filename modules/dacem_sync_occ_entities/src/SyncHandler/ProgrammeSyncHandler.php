@@ -126,19 +126,25 @@ class ProgrammeSyncHandler extends OccLosSyncHandlerBase implements SyncHandlerI
     $source = $this->entityManager->loadByUuid($entity_type_id, $uuid);
 
     // Check for existing target before creating new.
-    // Source UUID is new, so compare by unique field combination.
-    $source_hei_id = $this->entityManager->getGroupHeiId($source);
-    $source_unique_per_hei = $source->get(self::SOURCE_UNIQUE_PER_HEI)->value;
-
-    $target_properties = [
-      self::TARGET_HEI_FIELD => $source_hei_id,
-      self::TARGET_UNIQUE_PER_HEI => $source_unique_per_hei,
-    ];
-
     $target = NULL;
-    if ($source_hei_id && $source_unique_per_hei) {
-      $target = $this->entityManager
-        ->loadByProperties(self::TARGET_ENTITY_TYPE_ID, $target_properties);
+    $target_properties = [EntityManager::BASE_FIELD => $uuid];
+    $target = $this->entityManager
+      ->loadByProperties(self::TARGET_ENTITY_TYPE_ID, $target_properties);
+
+    if (empty($target)) {
+      // Source UUID is new, so compare by unique field combination.
+      $source_hei_id = $this->entityManager->getGroupHeiId($source);
+      $source_unique_per_hei = $source->get(self::SOURCE_UNIQUE_PER_HEI)->value;
+
+      $target_properties = [
+        self::TARGET_HEI_FIELD => $source_hei_id,
+        self::TARGET_UNIQUE_PER_HEI => $source_unique_per_hei,
+      ];
+
+      if ($source_hei_id && $source_unique_per_hei) {
+        $target = $this->entityManager
+          ->loadByProperties(self::TARGET_ENTITY_TYPE_ID, $target_properties);
+      }
     }
 
     $map = $this->fieldMapping
