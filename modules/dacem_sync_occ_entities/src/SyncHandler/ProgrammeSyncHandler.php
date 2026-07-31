@@ -134,8 +134,12 @@ class ProgrammeSyncHandler extends OccLosSyncHandlerBase implements SyncHandlerI
       self::TARGET_HEI_FIELD => $source_hei_id,
       self::TARGET_UNIQUE_PER_HEI => $source_unique_per_hei,
     ];
-    $target = $this->entityManager
-      ->loadByProperties(self::TARGET_ENTITY_TYPE_ID, $target_properties);
+
+    $target = NULL;
+    if ($source_hei_id && $source_unique_per_hei) {
+      $target = $this->entityManager
+        ->loadByProperties(self::TARGET_ENTITY_TYPE_ID, $target_properties);
+    }
 
     $map = $this->fieldMapping
       ->mapping()[self::TARGET_ENTITY_TYPE_ID][self::TARGET_BUNDLE];
