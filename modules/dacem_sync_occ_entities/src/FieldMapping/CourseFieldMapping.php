@@ -41,8 +41,8 @@ class CourseFieldMapping implements FieldMappingInterface {
               'value' => 'value',
             ],
             'required' => TRUE,
-            'source' => 'field_credits',
-            'transformer' => 'int_to_float',
+            'source' => 'field_iec_credits',
+            'transformer' => 'canonical',
           ],
           'course__academic_term' => [
             'properties' => [

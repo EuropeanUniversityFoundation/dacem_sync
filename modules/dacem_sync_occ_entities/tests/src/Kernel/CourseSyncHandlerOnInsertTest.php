@@ -78,7 +78,7 @@ class CourseSyncHandlerOnInsertTest extends CourseSyncHandlerTestBase {
     $this->assertEquals($expected, $values['code']);
 
     // 'field_credits' to 'course__ects'.
-    $expected = [['value' => 6]];
+    $expected = [['value' => 6.0]];
     $this->assertEquals($expected, $values['course__ects']);
 
     // 'field_iec_term' to 'course__academic_term'.

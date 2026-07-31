@@ -57,7 +57,7 @@ class CourseSyncHandlerOnUpdateTest extends CourseSyncHandlerTestBase {
     $vid_on_insert = $course->getRevisionId();
 
     $node = Node::load(2);
-    $node->set('field_credits', ['value' => 12]);
+    $node->set('field_iec_credits', ['value' => 12.0]);
     $node->save();
 
     // Fifth item: course update.
@@ -82,7 +82,7 @@ class CourseSyncHandlerOnUpdateTest extends CourseSyncHandlerTestBase {
     );
 
     // 'field_credits' to 'course__ects'.
-    $expected = [['value' => 12]];
+    $expected = [['value' => 12.0]];
     $this->assertEquals($expected, $values['course__ects']);
   }
 

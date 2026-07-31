@@ -42,11 +42,13 @@ class CourseSyncHandlerTestBase extends ProgrammeSyncHandlerTestBase {
     $field_instance->save();
 
     // Field storage is defined upstream.
-    $field_storage_key = implode('.', [
-      CourseSyncHandler::SOURCE_ENTITY_TYPE_ID,
-      'field_credits',
+    $field_storage = FieldStorageConfig::create([
+      'field_name' => 'field_iec_credits',
+      'entity_type' => CourseSyncHandler::SOURCE_ENTITY_TYPE_ID,
+      'type' => 'decimal',
+      'cardinality' => 1,
     ]);
-    $field_storage = FieldStorageConfig::load($field_storage_key);
+    $field_storage->save();
 
     // Create the field config for the relevant Content type.
     $field_instance = FieldConfig::create([
@@ -482,7 +484,7 @@ class CourseSyncHandlerTestBase extends ProgrammeSyncHandlerTestBase {
       'type' => CourseSyncHandler::SOURCE_BUNDLE,
       'title' => 'Example Course',
       'field_iec_code' => 'CR-1',
-      'field_credits' => 6,
+      'field_iec_credits' => 6.0,
       'field_iec_term' => [1, 2],
     // Programme created during parent setup is the first LOS.
       'field_iec_programme' => '1',
