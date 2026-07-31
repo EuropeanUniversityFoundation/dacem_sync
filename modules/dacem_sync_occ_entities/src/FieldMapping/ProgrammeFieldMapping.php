@@ -125,8 +125,8 @@ class ProgrammeFieldMapping implements FieldMappingInterface {
             ],
             'required' => TRUE,
             'source' => [
-              'field_length_of_programme.value',
-              'field_number_of_terms.value',
+              'field_length_of_programme',
+              'field_number_of_terms',
             ],
             'transformer' => 'fraction',
           ],

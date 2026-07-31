@@ -49,8 +49,8 @@ class FractionTest extends UnitTestCase {
         'value' => 'result',
       ],
       'source' => [
-        'field_numerator.value',
-        'field_denominator.value',
+        'field_numerator',
+        'field_denominator',
       ],
     ];
 

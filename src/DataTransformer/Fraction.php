@@ -12,7 +12,6 @@ use Drupal\dacem_sync\DataTransformerInterface;
  */
 class Fraction implements DataTransformerInterface {
 
-  public const GLUE = '.';
   public const SEPARATOR = '/';
 
   /**
@@ -28,11 +27,8 @@ class Fraction implements DataTransformerInterface {
   public function transform(ContentEntityInterface $source, array $strategy): array {
     $source_values = [];
 
-    foreach ($strategy['source'] as $field_name_prop) {
-      $parts = explode(self::GLUE, $field_name_prop);
-      $field_name = $parts[0];
-      $prop = $parts[1];
-      $source_values[] = $source->get($field_name)->getValue()[0][$prop];
+    foreach ($strategy['source'] as $field_name) {
+      $source_values[] = $source->get($field_name)->getValue()[0]['value'];
     }
 
     $numerator = (int) $source_values[0];

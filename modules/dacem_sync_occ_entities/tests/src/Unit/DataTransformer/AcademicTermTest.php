@@ -56,7 +56,7 @@ class AcademicTermTest extends UnitTestCase {
       ],
       'source' => [
         'field_items',
-        'field_programme.programme.field_total',
+        'field_programme.node.field_total',
       ],
     ];
 
