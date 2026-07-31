@@ -2,20 +2,18 @@
 
 namespace Drupal\dacem_sync\Drush\Commands;
 
-use Drupal\Core\Database\Connection;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Queue\QueueFactory;
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dacem_sync\EntityManager;
 use Drupal\dacem_sync\Plugin\QueueWorker\DacemSyncQueueWorker;
-use Drupal\dacem_sync\SyncHandlerResolver;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Drush command to queue legacy content for syncing.
  */
-final class DacemSyncLegacyCommands extends DrushCommands {
+final class DacemSyncCommands extends DrushCommands implements ContainerInjectionInterface {
 
   public const DEFAULT_OPERATION = 'insert';
 
@@ -48,33 +46,23 @@ final class DacemSyncLegacyCommands extends DrushCommands {
   protected $syncHandlerResolver;
 
   /**
-   * The constructor.
-   *
-   * @param \Drupal\Core\Database\Connection $database
-   *   The database service.
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
-   *   The entity type manager.
-   * @param \Drupal\Core\Queue\QueueFactory $queue_factory
-   *   The queue factory service.
-   * @param \Drupal\dacem_sync\SyncHandlerResolver $sync_handler_resolver
-   *   The sync handler resolver.
+   * {@inheritdoc}
    */
-  public function __construct(
-    Connection $database,
-    EntityTypeManagerInterface $entity_type_manager,
-    QueueFactory $queue_factory,
-    SyncHandlerResolver $sync_handler_resolver,
-  ) {
-    $this->database = $database;
-    $this->entityTypeManager = $entity_type_manager;
-    $this->queueFactory = $queue_factory;
-    $this->syncHandlerResolver = $sync_handler_resolver;
+  public static function create(ContainerInterface $container): static {
+    $instance = new static();
+
+    $instance->database = $container->get('database');
+    $instance->entityTypeManager = $container->get('entity_type.manager');
+    $instance->queueFactory = $container->get('queue');
+    $instance->syncHandlerResolver = $container->get('dacem_sync.sync_handler_resolver');
+
+    return $instance;
   }
 
   /**
    * Queues legacy entities for syncing.
    */
-  #[CLI\Command(name: 'dacem-sync:legacy')]
+  #[CLI\Command(name: 'dacem-sync:queue')]
   #[CLI\Option(
     name: 'dry-run',
     description: 'Report legacy entities without queueing them.'
