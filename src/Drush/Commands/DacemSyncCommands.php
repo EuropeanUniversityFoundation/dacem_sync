@@ -154,22 +154,35 @@ final class DacemSyncCommands extends DrushCommands implements ContainerInjectio
     $source_definition = $this->entityTypeManager
       ->getDefinition($source_entity_type_id);
 
-    $source_table = $source_definition->getDataTable()
-      ?: $source_definition->getBaseTable();
+    $source_table = $source_definition->getBaseTable();
+    $source_data_table = $source_definition->getDataTable();
 
     $source_entity_keys = $source_definition->getKeys();
+    $source_id_key = $source_entity_keys['id'];
     $source_uuid_key = $source_entity_keys['uuid'];
     $source_bundle_key = $source_entity_keys['bundle'];
 
     $target_definition = $this->entityTypeManager
       ->getDefinition($target_entity_type_id);
 
-    $target_table = $target_definition->getDataTable()
-      ?: $target_definition->getBaseTable();
+    $target_table = $target_definition->getBaseTable();
 
     $target_base_field = EntityManager::BASE_FIELD;
 
     $query = $this->database->select($source_table, 'source');
+
+    if ($source_data_table) {
+      $query->innerJoin(
+        $source_data_table,
+        'data',
+        "data.$source_id_key = base.$source_id_key"
+      );
+
+      $source_bundle_alias = 'data';
+    }
+    else {
+      $source_bundle_alias = 'base';
+    }
 
     $query->leftJoin(
       $target_table,
@@ -180,7 +193,7 @@ final class DacemSyncCommands extends DrushCommands implements ContainerInjectio
     $query->fields('source', [$source_uuid_key]);
 
     $query->condition(
-      "source.$source_bundle_key",
+      "$source_bundle_alias.$source_bundle_key",
       $source_bundle
     );
 
