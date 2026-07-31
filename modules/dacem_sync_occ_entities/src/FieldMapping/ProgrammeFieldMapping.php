@@ -156,6 +156,7 @@ class ProgrammeFieldMapping implements FieldMappingInterface {
           ],
           'hei' => [
             'required' => TRUE,
+            'source' => [],
             'transformer' => 'group_hei',
           ],
           'ounit' => [

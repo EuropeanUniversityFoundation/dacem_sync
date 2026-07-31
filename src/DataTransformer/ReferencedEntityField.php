@@ -5,14 +5,11 @@ declare(strict_types=1);
 namespace Drupal\dacem_sync\DataTransformer;
 
 use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\dacem_sync\DataTransformerInterface;
 
 /**
  * Defines a ReferencedEntityField data transformer.
  */
-class ReferencedEntityField implements DataTransformerInterface {
-
-  public const GLUE = '.';
+class ReferencedEntityField extends DataTransformerBase {
 
   /**
    * {@inheritdoc}
@@ -24,7 +21,7 @@ class ReferencedEntityField implements DataTransformerInterface {
   /**
    * {@inheritdoc}
    */
-  public function transform(ContentEntityInterface $source, array $strategy): array {
+  public function doTransform(ContentEntityInterface $source, array $strategy): array {
     $output = [];
 
     $source_chain = explode(self::GLUE, $strategy['source']);

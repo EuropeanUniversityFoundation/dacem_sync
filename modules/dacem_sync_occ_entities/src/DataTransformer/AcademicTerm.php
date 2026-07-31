@@ -5,15 +5,12 @@ declare(strict_types=1);
 namespace Drupal\dacem_sync_occ_entities\DataTransformer;
 
 use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\dacem_sync\DataTransformerInterface;
+use Drupal\dacem_sync\DataTransformer\DataTransformerBase;
 
 /**
  * Defines a AcademicTerm data transformer.
  */
-class AcademicTerm implements DataTransformerInterface {
-
-  public const GLUE = '.';
-  public const SEPARATOR = '/';
+class AcademicTerm extends DataTransformerBase {
 
   /**
    * {@inheritdoc}
@@ -25,7 +22,7 @@ class AcademicTerm implements DataTransformerInterface {
   /**
    * {@inheritdoc}
    */
-  public function transform(ContentEntityInterface $source, array $strategy): array {
+  public function doTransform(ContentEntityInterface $source, array $strategy): array {
     $output = [];
 
     $reference_field_chain = explode(self::GLUE, $strategy['source'][1]);

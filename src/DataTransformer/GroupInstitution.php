@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Drupal\dacem_sync\DataTransformer;
 
 use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\dacem_sync\DataTransformerInterface;
 use Drupal\dacem_sync\EntityManager;
 
 /**
  * Defines a GroupInstitution data transformer.
  */
-class GroupInstitution implements DataTransformerInterface {
+class GroupInstitution extends DataTransformerBase {
 
   /**
    * The entity manager.
@@ -42,7 +41,7 @@ class GroupInstitution implements DataTransformerInterface {
   /**
    * {@inheritdoc}
    */
-  public function transform(ContentEntityInterface $source, array $strategy): array {
+  public function doTransform(ContentEntityInterface $source, array $strategy): array {
     $output = [
       ['target_id' => (string) $this->entityManager->getGroupHeiId($source)],
     ];

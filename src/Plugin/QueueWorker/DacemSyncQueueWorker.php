@@ -9,6 +9,7 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\Attribute\QueueWorker;
 use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\dacem_sync\Exception\MissingRequiredFieldException;
 use Drupal\dacem_sync\SyncHandlerResolver;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -95,22 +96,30 @@ class DacemSyncQueueWorker extends QueueWorkerBase implements ContainerFactoryPl
     $sync_handler_id = $data['sync_handler'];
     $sync_handler = $this->syncHandlerResolver->get($sync_handler_id);
 
-    switch ($operation) {
-      case 'insert':
-        $sync_handler->onInsert($entity_type_id, $bundle, $uuid);
-        break;
+    try {
+      switch ($operation) {
+        case 'insert':
+          $sync_handler->onInsert($entity_type_id, $bundle, $uuid);
+          break;
 
-      case 'update':
-        $sync_handler->onUpdate($entity_type_id, $bundle, $uuid);
-        break;
+        case 'update':
+          $sync_handler->onUpdate($entity_type_id, $bundle, $uuid);
+          break;
 
-      case 'delete':
-        $sync_handler->onDelete($entity_type_id, $bundle, $uuid);
-        break;
+        case 'delete':
+          $sync_handler->onDelete($entity_type_id, $bundle, $uuid);
+          break;
 
-      default:
-        break;
+        default:
+          break;
+      }
     }
+    catch (MissingRequiredFieldException $e) {
+      // Don't retry.
+      $this->logger->warning($e->getMessage());
+      return;
+    }
+
   }
 
 }

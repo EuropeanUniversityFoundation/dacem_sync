@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Drupal\dacem_sync_occ_entities\DataTransformer;
 
 use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\dacem_sync\DataTransformerInterface;
+use Drupal\dacem_sync\DataTransformer\DataTransformerBase;
 
 /**
  * Defines a Negate data transformer.
  */
-class Negate implements DataTransformerInterface {
+class Negate extends DataTransformerBase {
 
   /**
    * {@inheritdoc}
@@ -22,7 +22,7 @@ class Negate implements DataTransformerInterface {
   /**
    * {@inheritdoc}
    */
-  public function transform(ContentEntityInterface $source, array $strategy): array {
+  public function doTransform(ContentEntityInterface $source, array $strategy): array {
     $output = [];
 
     $source_field_name = $strategy['source'];

@@ -187,6 +187,7 @@ class CourseFieldMapping implements FieldMappingInterface {
           ],
           'hei' => [
             'required' => TRUE,
+            'source' => [],
             'transformer' => 'group_hei',
           ],
           'course__related_programme' => [

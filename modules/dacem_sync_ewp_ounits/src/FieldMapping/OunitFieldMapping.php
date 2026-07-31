@@ -68,6 +68,7 @@ class OunitFieldMapping implements FieldMappingInterface {
           ],
           'parent_hei' => [
             'required' => TRUE,
+            'source' => [],
             'transformer' => 'group_hei',
           ],
         ],

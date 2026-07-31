@@ -5,14 +5,11 @@ declare(strict_types=1);
 namespace Drupal\dacem_sync\DataTransformer;
 
 use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\dacem_sync\DataTransformerInterface;
 
 /**
  * Defines a Fraction data transformer.
  */
-class Fraction implements DataTransformerInterface {
-
-  public const SEPARATOR = '/';
+class Fraction extends DataTransformerBase {
 
   /**
    * {@inheritdoc}
@@ -24,7 +21,7 @@ class Fraction implements DataTransformerInterface {
   /**
    * {@inheritdoc}
    */
-  public function transform(ContentEntityInterface $source, array $strategy): array {
+  public function doTransform(ContentEntityInterface $source, array $strategy): array {
     $source_values = [];
 
     foreach ($strategy['source'] as $field_name) {

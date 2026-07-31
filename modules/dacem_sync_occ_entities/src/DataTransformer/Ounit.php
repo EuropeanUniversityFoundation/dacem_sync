@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Drupal\dacem_sync_occ_entities\DataTransformer;
 
 use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\dacem_sync\DataTransformerInterface;
+use Drupal\dacem_sync\DataTransformer\DataTransformerBase;
 use Drupal\dacem_sync\EntityManager;
 
 /**
  * Defines an OUnit data transformer.
  */
-class Ounit implements DataTransformerInterface {
+class Ounit extends DataTransformerBase {
 
   /**
    * The entity manager.
@@ -42,7 +42,7 @@ class Ounit implements DataTransformerInterface {
   /**
    * {@inheritdoc}
    */
-  public function transform(ContentEntityInterface $source, array $strategy): array {
+  public function doTransform(ContentEntityInterface $source, array $strategy): array {
     $output = [];
 
     $reference = $strategy['source'];
