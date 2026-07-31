@@ -39,28 +39,33 @@ class AcademicTerm implements DataTransformerInterface {
     $referenced_entities = $reference_field->referencedEntities();
     $referenced_entity = reset($referenced_entities);
 
-    /** @var \Drupal\Core\Entity\ContentEntityInterface $referenced_entity */
-    $referenced_field_data = $referenced_entity
-      ->get($referenced_field_name)
-      ->getValue();
+    if ($referenced_entity) {
+      /** @var \Drupal\Core\Entity\ContentEntityInterface $referenced_entity */
+      $referenced_field_data = $referenced_entity
+        ->get($referenced_field_name)
+        ->getValue();
 
-    $referenced_field_value = reset($referenced_field_data);
-    $denominator = (string) array_values($referenced_field_value)[0];
+      $referenced_field_value = reset($referenced_field_data);
 
-    $source_field_name = $strategy['source'][0];
-    $source_field_data = $source->get($source_field_name)->getValue();
+      if ($referenced_field_value) {
+        $denominator = (string) array_values($referenced_field_value)[0];
 
-    foreach ($source_field_data as $item) {
-      $transformed = [];
-      foreach ($strategy['properties'] as $target_prop => $source_prop) {
-        if (array_key_exists($source_prop, $item)) {
-          $numerator = $item[$source_prop];
-          $fraction = implode(self::SEPARATOR, [$numerator, $denominator]);
-          $transformed[$target_prop] = $fraction;
+        $source_field_name = $strategy['source'][0];
+        $source_field_data = $source->get($source_field_name)->getValue();
+
+        foreach ($source_field_data as $item) {
+          $transformed = [];
+          foreach ($strategy['properties'] as $target_prop => $source_prop) {
+            if (array_key_exists($source_prop, $item)) {
+              $numerator = $item[$source_prop];
+              $fraction = implode(self::SEPARATOR, [$numerator, $denominator]);
+              $transformed[$target_prop] = $fraction;
+            }
+          }
+
+          $output[] = $transformed;
         }
       }
-
-      $output[] = $transformed;
     }
 
     return $output;
