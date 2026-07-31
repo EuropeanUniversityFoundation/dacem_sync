@@ -96,7 +96,6 @@ class CourseFieldMapping implements FieldMappingInterface {
             'properties' => [
               'value' => 'value',
             ],
-            'required' => TRUE,
             'source' => 'field_fields_of_study',
             'transformer' => 'canonical',
           ],

@@ -73,9 +73,9 @@ class ContentChangedEventSubscriber implements EventSubscriberInterface {
         'operation' => $event->operation,
       ];
 
-      $message = implode(':', array_values($params));
+      // $message = implode(':', array_values($params));
 
-      $this->logger->notice($message);
+      // $this->logger->notice($message);
 
       $params['sync_handler'] = OunitSyncHandler::SYNC_HANDLER_ID;
 
