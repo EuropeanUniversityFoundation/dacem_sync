@@ -80,7 +80,7 @@ class RelatedProgramme implements DataTransformerInterface {
       $terms_per_year_values = $entity->get($terms_per_year_field)->getValue();
       $terms_per_year = $terms_per_year_values[0]['value'];
 
-      if ($term_count && $terms_per_year) {
+      if ($los && $term_count && $terms_per_year) {
         $year_count = (int) ceil($term_count / $terms_per_year);
 
         $output[] = [
