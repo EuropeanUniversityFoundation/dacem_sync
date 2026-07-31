@@ -16,7 +16,7 @@ class RelatedProgramme implements DataTransformerInterface {
   public const GLUE = '.';
   public const SEPARATOR = '/';
 
-  public const MANDATORY_VALUES = ['core', 'mandatory'];
+  public const MANDATORY_KEYS = ['core', 'mandatory'];
 
   /**
    * The entity manager.
@@ -80,13 +80,15 @@ class RelatedProgramme implements DataTransformerInterface {
       $terms_per_year_values = $entity->get($terms_per_year_field)->getValue();
       $terms_per_year = $terms_per_year_values[0]['value'];
 
-      $year_count = (int) ceil($term_count / $terms_per_year);
+      if ($term_count && $terms_per_year) {
+        $year_count = (int) ceil($term_count / $terms_per_year);
 
-      $output[] = [
-        'target_id' => (string) $los->id(),
-        'mandatory' => (string) (int) (in_array($type, self::MANDATORY_VALUES)),
-        'year' => implode(self::SEPARATOR, [$year, $year_count]),
-      ];
+        $output[] = [
+          'target_id' => (string) $los->id(),
+          'mandatory' => (string) (int) (in_array($type, self::MANDATORY_KEYS)),
+          'year' => implode(self::SEPARATOR, [$year, $year_count]),
+        ];
+      }
     }
 
     return $output;
