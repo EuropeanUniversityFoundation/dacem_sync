@@ -53,7 +53,6 @@ class OccLosSyncHandlerTestBase extends KernelTestBase {
     'ewp_institutions',
     'entity_reference_validators',
     'ewp_ounits',
-    'erasmus_subject_area_code',
     'isced_field',
     'elm_vocabulary_field',
     'occ_entities',
