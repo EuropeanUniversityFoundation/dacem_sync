@@ -122,8 +122,13 @@ class ProgrammeSyncHandler extends OccLosSyncHandlerBase implements SyncHandlerI
    * {@inheritdoc}
    */
   public function onInsert(string $entity_type_id, string $bundle, string $uuid): void {
-    /** @var \Drupal\Core\Entity\ContentEntityInterface $source */
+    /** @var \Drupal\Core\Entity\ContentEntityInterface|null $source */
     $source = $this->entityManager->loadByUuid($entity_type_id, $uuid);
+
+    if (empty($source)) {
+      $this->logger->error("Empty $bundle with UUID $uuid onInsert");
+      return;
+    }
 
     // Check for existing target before creating new.
     $target = NULL;
@@ -174,6 +179,12 @@ class ProgrammeSyncHandler extends OccLosSyncHandlerBase implements SyncHandlerI
     /** @var \Drupal\Core\Entity\ContentEntityInterface|null $source */
     $source = $this->entityManager->loadByUuid($entity_type_id, $uuid);
 
+    if (empty($source)) {
+      $this->onDelete($entity_type_id, $bundle, $uuid);
+      $this->logger->error("Empty $bundle with UUID $uuid onUpdate");
+      return;
+    }
+
     // Check for missing target before attempting to update.
     $target = $this->entityManager
       ->loadBySourceUuid(self::TARGET_ENTITY_TYPE_ID, $uuid);
@@ -188,9 +199,6 @@ class ProgrammeSyncHandler extends OccLosSyncHandlerBase implements SyncHandlerI
         $source,
         $map
       );
-    }
-    elseif (empty($source)) {
-      $this->onDelete($entity_type_id, $bundle, $uuid);
     }
     else {
       $this->entityBuilder->updateTargetFromSource($target, $source, $map);
@@ -224,6 +232,7 @@ class ProgrammeSyncHandler extends OccLosSyncHandlerBase implements SyncHandlerI
   public function onDelete(string $entity_type_id, string $bundle, string $uuid): void {
     $target = $this->entityManager
       ->loadBySourceUuid(self::TARGET_ENTITY_TYPE_ID, $uuid);
+
     if (!empty($target)) {
       /** @var \Drupal\Core\Entity\ContentEntityInterface $target */
       $target->set(self::TARGET_OFF_SWITCH, self::TARGET_OFF_STATE);

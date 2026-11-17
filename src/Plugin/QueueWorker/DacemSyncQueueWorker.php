@@ -84,9 +84,7 @@ class DacemSyncQueueWorker extends QueueWorkerBase implements ContainerFactoryPl
    */
   public function processItem($data): void {
     // $message = implode(':', array_values($data));
-
     // $this->logger->notice($message);
-
     $entity_type_id = $data['entity_type_id'];
     $bundle = $data['bundle'];
     $uuid = $data['uuid'];

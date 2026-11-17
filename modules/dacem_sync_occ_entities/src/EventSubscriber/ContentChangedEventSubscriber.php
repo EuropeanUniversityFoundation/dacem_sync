@@ -87,9 +87,7 @@ class ContentChangedEventSubscriber implements EventSubscriberInterface {
         ];
 
         // $message = implode(':', array_values($params));
-
         // $this->logger->notice($message);
-
         $params['sync_handler'] = $handler_id;
 
         $queue = $this->queueFactory->get(DacemSyncQueueWorker::QUEUE_NAME);
